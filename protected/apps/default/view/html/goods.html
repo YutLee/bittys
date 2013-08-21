@@ -1,0 +1,80 @@
+<!-- 商品 -->
+
+<div id="ajax_store" class="ajax_box bg" style="display:block;">
+
+    <div class="mod_loading"></div>
+    
+    <!-- 头部 -->
+    <div class="mod_header bg_header bdc">
+        <div class="title">商品</div>
+        <div class="js_back back"></div>
+        <a class="toIndex" href="#"></a>
+        <a class="toSearch" href="#index.php?r=default/search/index"></a>
+    </div>
+    
+    <!-- 选项卡 -->
+    <div id="tabs" class="ku_fix mod_goodsTab">
+        <div class="tab comment" data-role="tab">评论<span class="bg_tab"></span></div>
+        <div class="tab base" data-role="tab">基本<span class="bg_tab"></span></div>
+        <div class="tab detail" data-role="tab">详情<span class="bg_tab"></span></div>
+    </div>
+    
+    <!-- 内容 -->
+    <div id="js_store_index_wrapper" class="iscroll" style="top:86px;">
+        <div id="ajax_store_data" class="tab_data">
+            <div class="tab_wrapper">
+                <div class="tab_contents">
+                    <!-- 商品_评论 -->
+                    <div class="tab_content">
+                        <div>
+                            <div class="mod_goodsComment_no">
+                                亲，暂时没有评论喔
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 商品_基本 -->
+                    <div class="tab_content">
+                        <div> 
+                            <!-- 商品图片 -->
+                            <div class="box_goodsPic" >
+                                <img src="http://shop.100msh.com/<#=goods.default_image#>" alt="">
+                            </div>
+                            
+                            <!-- 商品信息 -->
+                            <div class="mod_goodsInfo">
+                                <div class="title"><#=goods.goods_name#></div>
+                                <div class="level">
+                                    <div class="star"></div>
+                                </div>
+                                <div class="price c_money"><span>¥</span><#=goods.price#></div>
+                                <div class="slogn"><#=goods.tags#></div>
+                            </div>
+                            
+                            <!-- 商品功能 -->
+                            <div class="box_goodsAction">
+                                <div class="ku_fix mod_goodsAction">
+                                    <a class=" phone" data-tel="4006660598" data-srcname="cater" href="tel:4006660598">
+                                        <div class="icon"></div>
+                                        <div class="info">电话订购</div>
+                                    </a>
+                                    <a class=" tostore" href="#index.php?r=default/store/index&id=<#=goods.store_id#>">
+                                        <div class="icon"></div>
+                                        <div class="info">商家首页</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 商品_详情 -->
+                    <div class="tab_content">
+                        <div>
+                            <div class="mod_goodsDetail">
+                                <#-goods.description#>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

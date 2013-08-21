@@ -1,0 +1,17 @@
+2013-07-18 14:52:37 | ::1 | /miso/index.php | 无法连接到数据库服务器<br>
+					<b>SQL</b>: SELECT store_id FROM ecm_goods  WHERE goods_id='2836' LIMIT 1<br>
+					<b>错误详情</b>: Access denied for user 'miso'@'localhost' (using password: YES)<br>
+					<b>错误代码</b>:1045<br>
+2013-07-18 14:52:43 | ::1 | /miso/index.php | 无法连接到数据库服务器<br>
+					<b>SQL</b>: SELECT store_id FROM ecm_goods  WHERE goods_id='2835' LIMIT 1<br>
+					<b>错误详情</b>: Access denied for user 'miso'@'localhost' (using password: YES)<br>
+					<b>错误代码</b>:1045<br>
+2013-07-18 14:53:11 | ::1 | /miso/index.php | 无法连接到数据库服务器<br>
+					<b>SQL</b>: SELECT store_id FROM ecm_goods  WHERE goods_id='2835' LIMIT 1<br>
+					<b>错误详情</b>: Access denied for user 'miso'@'localhost' (using password: YES)<br>
+					<b>错误代码</b>:1045<br>
+2013-07-18 15:40:02 | ::1 | /miso/index.php |default/viewController.php 控制器类不存在
+2013-07-18 15:40:43 | ::1 | /miso/index.php |default/viewController.php 控制器类不存在
+2013-07-18 15:40:56 | ::1 | /miso/index.php |default/viewController.php 控制器类不存在
+2013-07-18 15:40:59 | ::1 | /miso/index.php |default/viewController.php 控制器类不存在
+2013-07-18 15:41:07 | ::1 | /miso/index.php/index.php |default/viewController.php 控制器类不存在

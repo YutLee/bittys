@@ -1,0 +1,292 @@
+@charset "utf-8";
+/* 
+==============================================================================================================================================================================================================================================================================================================================================================================================================================
+   网站风格：全站受影响。当前网站关于风格的样式，做到只修改一个地方所有地方都变化。包括颜色、边框、尺寸等
+==============================================================================================================================================================================================================================================================================================================================================================================================================================
+*/
+html,body{ height:100%; position:relative;}
+
+.style_orange .bg{ background:#ececec;}
+.style_orange .bg_header{ background:-webkit-gradient(linear, 0 0, 0 bottom, from( #ff5b54 ), to( #e3514a )); }
+.style_orange .bg_tab{ background:#ef452d;}
+.style_orange .bdc{ border-color:#cc4943;}
+.style_orange .c_money{ color:#ef452d;}
+
+
+/* ============================== 统一的模块 ============================== */
+
+/* 欢迎 */
+.box_welcome{ position:absolute; left:0; right:0; top:0; bottom:0; background:#fff url(../img/icon/loading_tiffany.gif) no-repeat 50% 50%; z-index:10000;}
+
+/* 页面载入 */
+.mod_loading{ position:absolute; left:0; right:0; top:0; bottom:0; background:#fff url(../img/icon/loading_tiffany.gif) no-repeat 50% 50%; display:none; }
+
+/* 头部 */
+/* 都有用 */
+.mod_header{ height:46px; box-shadow:0 1px 6px rgba(0,0,0,.3); border-bottom:1px solid; }
+.mod_header .back{ position:absolute; left:0; top:0; width:40px; height:46px; background:url(../img/icon/back.png) no-repeat 50% 50%; background-size:cover;}
+
+/* 搜索有用 */
+.mod_header .search{ padding:6px 0;}
+.mod_header .search .inputBox{ background:#fff; padding:0 4px; margin:0 74px 0 40px; height:34px;}
+.mod_header .search .inputBox input{ padding:8px 4px; width:100%; margin:0 0 0 -4px;}
+.mod_header .search .toSearch{ position:absolute; right:0; top:0; width:40px; height:46px; background:url(../img/search/3.png) no-repeat 50% 50%; background-size:cover;}
+.mod_header .search .toSearch.touch{ background-color:rgba(0,0,0,.3);}
+.mod_header .search .clearInput{ position:absolute; right:40px; top:6px; width:34px; height:34px; background:#fff; font-size:1.5em; line-height:34px; text-align:center; color:#999;}
+
+/* 商品，商家有用 */
+.mod_header .title{ font-size:18px; line-height:46px;  color:#fff; text-indent:46px; }
+.mod_header .toIndex{ position:absolute; right:46px; top:0; width:40px; height:46px; background:url(../img/icon/product.png) no-repeat 50% 50%; background-size:cover;}
+.mod_header .toSearch{ position:absolute; right:0; top:6px; width:40px; height:34px; background:url(../img/search/3.png) no-repeat 50% 50%; background-size:cover;}
+
+
+/* 滚动 */
+.iscroll{ position:absolute; left:0; top:46px; bottom:0; width: 100%; overflow: auto;}
+
+/* 选项卡 */
+.tab_data, .tab_data .hashchangeCache, .tab_wrapper{height:100%;}
+.tab_contents{width:100%;height:100%;}
+.tab_content{float:left;width:100%;height:100%;position: relative;}
+
+
+/* 
+==============================================================================================================================================================================================================================================================================================================================================================================================================================
+   具体样式：绝对的一对一
+==============================================================================================================================================================================================================================================================================================================================================================================================================================
+*/
+
+/* ============================== 首页 ============================== */
+.page_index{ position:relative; z-index:1;}
+/* logo */
+.page_index .box_logo{ padding:30px 0;}
+.page_index .mod_logo{ margin:0 auto; width:320px; height:50px; background:url(../img/logo/logo.png) no-repeat 0 0; background-size:cover;}
+
+/* 搜索引导 */
+.page_index .mod_leadsearch{ position:relative; display:block; height:40px; margin:0 10px; background:rgba(255,255,255,.3); }
+.page_index .mod_leadsearch.touch{ background-color:rgba(0,0,0,.3);}
+.page_index .mod_leadsearch .icon{ position:absolute; right:0; top:0; height:40px; width:40px; background:url(../img/search/search.png) no-repeat 0 0; background-size:cover;}
+
+/* 应用 */
+.page_index .box_app{ padding:20px 0; }
+.page_index .mod_app{ padding:0 4px 0 4px;}
+.page_index .mod_app .list{ float:left; width:96px; height:96px; margin:4px;}
+.page_index .mod_app .icon{ width:66px; height:66px; margin:auto; }
+.page_index .mod_app .text{ font-size:14px; line-height:30px; text-align:center; color:#fff; text-shadow:0 0 4px rgba(0,0,0,.6);}
+
+/* 应用图标 */
+.page_index .mod_app .my_community .icon{ background:url(../img/icon/my_community.png) no-repeat 0 0; background-size:cover;}
+.page_index .mod_app .news .icon{ background:url(../img/icon/news.png) no-repeat 0 0; background-size:cover;}
+.page_index .mod_app .mall .icon{ background:url(../img/icon/mall.png) no-repeat 0 0; background-size:cover;}
+.page_index .mod_app .run .icon{ background:url(../img/icon/run.png) no-repeat 0 0; background-size:cover;}
+.page_index .mod_app .warehouse .icon{ background:url(../img/icon/warehouse.png) no-repeat 0 0; background-size:cover;}
+.page_index .mod_app .express .icon{ background:url(../img/icon/express.png) no-repeat 0 0; background-size:cover;}
+
+/* 图片故事 */
+.box_todayPic{ position:absolute; left:0; top:0; bottom:0; right:0; overflow:hidden;}
+.box_todayPic img{ width:100%;}
+
+
+/* ============================== 默认_搜索 ============================== */
+/* 搜索和热门 */
+.mod_searchBox{ position:absolute; left:0; top:0; right:0; height:46px; z-index:101; box-shadow:0 1px 6px rgba(0,0,0,.3); border-bottom:1px solid; }
+.mod_searchBox .search{ padding:6px 0;}
+.mod_searchBox .search .inputBox{ background:#fff; padding:0 4px; margin:0 74px 0 40px; height:34px;}
+.mod_searchBox .search .inputBox input{ padding:8px 4px; width:100%; margin:0 0 0 -4px;}
+.mod_searchBox .search .toSearch{ position:absolute; right:0; top:0; width:40px; height:46px; background:url(../img/search/3.png) no-repeat 50% 50%; background-size:cover;}
+.mod_searchBox .search .toSearch.touch{ background-color:rgba(0,0,0,.3);}
+.mod_searchBox .search .back{ position:absolute; left:0; top:0; width:40px; height:46px; background:url(../img/icon/back.png) no-repeat 50% 50%; background-size:cover;}
+.mod_searchBox .search .back.touch{ background-color:rgba(0,0,0,.3);}
+.mod_searchBox .search .clearInput{ position:absolute; right:40px; top:6px; width:34px; height:34px; background:#fff; font-size:1.5em; line-height:34px; text-align:center; color:#999;}
+
+/* 未搜索时 */
+.mod_my_search{}
+.mod_my_search .title{ height:40px; line-height:40px; margin:0 8px; color:#acacac; font-size:14px; padding:8px 0 0 0;}
+.mod_my_search a{ line-height:34px; background:#fff; cursor:pointer; float:left; margin:0 10px 10px 0; padding:0 15px; white-space:nowrap; max-width:200px; overflow:hidden; color:#333; }
+
+.box_hasSearch{ display:none;}
+/* 搜索结果 */
+/* 筛选 */
+.mod_filter { position:relative; height:40px; line-height:40px; font-size:0.875em; color:#ddd; display:none;}
+.mod_filter .tabs{ margin:0 0 0 8px;}
+.mod_filter .tabs .tab{ float:left; margin:0 8px;}
+.mod_filter .tabs .tab:hover,
+.mod_filter .tabs .tab.choose{ color:#fff;}
+.mod_filter .action{ position:absolute; right:0; top:0; width:40px; }
+
+/* 结果列表 */
+.box_searchResults{ padding:0 0 8px 0; }
+.mod_searchResults .list{ padding:8px 4px 0 4px;}
+
+/* 新闻结果 */
+.mod_searchResults .list.news{}
+.mod_searchResults .list.news .link{ display:block; background:#fff; padding:16px 0 10px 0;}
+.mod_searchResults .list.news .link.touch{ background:rgba(255,255,255,.8);}
+.mod_searchResults .list.news .title{ line-height:1.2; padding:0 16px; color:#000; font-size:16px;}
+.mod_searchResults .list.news .time{ font-size:12px; padding:0 16px; color:#999;}
+.mod_searchResults .list.news .text{ font-size:14px; line-height:1.5; padding:0 16px; color:#666666;}
+.mod_searchResults .list.news .comment{ background:rgba(0,0,0,.2); color:#fff; font-size:14px; line-height:40px; padding:0 16px;}
+
+/* 商家结果 */
+.mod_searchResults .list.store{}
+.mod_searchResults .list.store .link{ display:block; background:#fff;}
+.mod_searchResults .list.store .link.touch{ background:#fff;}
+.mod_searchResults .list.store .title{ line-height:1.2; padding:10px 10px 0 10px; color:#000; font-size:16px;}
+.mod_searchResults .list.store .level{ margin:2px 0 4px 10px; width:100px; height:20px; background:url(../img/icon/star.png) no-repeat 0 0; background-size:cover;}
+.mod_searchResults .list.store .phone{ padding:0 10px 10px 10px; color:#333; font-size:14px; line-height:1.2;}
+.mod_searchResults .list.store .items{ font-size:14px; line-height:1.5; padding:0 16px; color:#666666; height:42px; overflow:hidden;}
+.mod_searchResults .list.store .items .tags{ float:left;}
+.mod_searchResults .list.store .items .item{ float:left;}
+.mod_searchResults .list.store .items .line{ float:left; padding:0 2%;}
+.mod_searchResults .list.store .action{}
+.mod_searchResults .list.store .action .item{ float:left; width:104px; text-align:center; color:#fff; font-size:14px; line-height:3; background:rgba(0,0,0,.2);}
+.mod_searchResults .list.store .action .item.touch{ background:#fff;}
+
+
+/* 商品结果 */
+.mod_searchResults .list.goods .link{ display:block; position:relative; background:#fff; min-height:100px; }
+.mod_searchResults .list.goods .link.touch{ background:#fff;}
+.mod_searchResults .list.goods .pic{ position:absolute; left:0; top:0; height:100px; width:100px; }
+.mod_searchResults .list.goods .pic img{ width:100%; height:100%;}
+
+.mod_searchResults .list.goods .service{ padding:0 0 0 100px;}
+.mod_searchResults .list.goods .title{ color:#000; font-size:16px; line-height:1.2; padding:10px 10px 0 10px; max-height:38px; overflow:hidden;}
+.mod_searchResults .list.goods .level{ margin:2px 0 4px 10px; width:100px; height:20px; background:url(../img/icon/star.png) no-repeat 0 0; background-size:cover;}
+.mod_searchResults .list.goods .price{ padding:0 10px; font-size:16px; line-height:1;}
+.mod_searchResults .list.goods .price span{ padding:0 4px 0 0;}
+
+.mod_searchResults .list.goods .action{}
+.mod_searchResults .list.goods .action .item{ float:left; width:104px; text-align:center; color:#fff; font-size:14px; line-height:3; background:rgba(0,0,0,.2);}
+.mod_searchResults .list.goods .action .item.touch{ background:#fff;}
+
+/* 有备无患 */
+.mod_listload{ line-height:100px; color:#999; text-align:center; }
+.mod_end{ line-height:60px; color:#999; text-align:center; display:none;}
+.mod_nodata{ line-height:100px; color:#999; text-align:center; display:none;}
+
+
+/* ============================== 商品 ============================== */
+/* 页面框架 */
+#ajax_store{position:absolute; left:0; top:0; bottom:0; right:0; z-index:102; display:none;}
+
+/* 选项卡 */
+.mod_goodsTab{ position:relative; z-index:1; background:#fff; box-shadow:0 1px 10px rgba(0,0,0,.3);}
+.mod_goodsTab .tab{ float:left; width:105px; position:relative; text-align:center; font-size:0.875em; color:#aaa; line-height:40px;}
+.mod_goodsTab .tab.base{ width:110px;}
+.mod_goodsTab .tab.choose{ color:#333;}
+.mod_goodsTab .tab.choose span{ position:absolute; bottom:0; left:0; right:0; height:4px; font-size:0; line-height:0;}
+
+/* 店铺图片 */
+.box_goodsPic{ position:relative;}
+.box_goodsPic img{ width:100%; vertical-align:top;}
+
+/* 店铺信息 */
+.mod_goodsInfo{ position:relative; color:#666; background:#fff;}
+.mod_goodsInfo .title{ font-size:18px; color:#000; padding:16px 16px 0 16px; line-height:1;}
+.mod_goodsInfo .level{ padding:8px 16px;}
+.mod_goodsInfo .level .star{ width:100px; height:20px; background:url(../img/icon/star.png) no-repeat 0 0; background-size:cover;}
+.mod_goodsInfo .price{ font-size:24px; line-height:1; padding:0 16px;}
+.mod_goodsInfo .price span{ font-size:16px; padding:0 4px 0 0;}
+.mod_goodsInfo .slogn{ font-size:14px; color:#666; padding:10px 16px 16px 16px; line-height:1.5;}
+
+/* 操作 */
+.box_goodsAction{ padding:8px 0; }
+.mod_goodsAction .love{ float:left; margin:0 2px; padding:10px 10px 0 10px; width:84px; text-align:center; background:#fff;}
+.mod_goodsAction .love .icon{ width:45px; margin:auto; height:45px; background:url(../img/icon/love.png) no-repeat 0 0; background-size:cover;}
+.mod_goodsAction .love .info{ font-size:14px; line-height:30px; color:#666;}
+
+.mod_goodsAction .phone{ float:left; width:49%; margin:0 1% 0 0; text-align:center; background:#fff;}
+.mod_goodsAction .phone .icon{ width:45px; margin:auto; height:45px; background:url(../img/icon/phone.png) no-repeat 0 0; background-size:cover;}
+.mod_goodsAction .phone .info{ font-size:14px; line-height:30px; color:#666;}
+
+.mod_goodsAction .tostore{ float:left; width:49%; margin:0 0 0 1%; text-align:center; background:#fff;}
+.mod_goodsAction .tostore.touch{ background-color:#FFF;}
+.mod_goodsAction .tostore .icon{ width:45px; margin:auto; height:45px; background:url(../img/icon/storeindex.png) no-repeat 0 0; background-size:cover;}
+.mod_goodsAction .tostore .info{ font-size:14px; line-height:30px; color:#666;}
+
+/* 商品评论 */
+.mod_goodsComment{}
+.mod_goodsComment .listBox{ padding:0 0 2px 0;}
+.mod_goodsComment .list{ position:relative; padding:12px 16px; background:#fff;}
+.mod_goodsComment .list .text{ line-height:1.3; font-size:16px;}
+.mod_goodsComment .list .name{ font-size:14px; color:#999;}
+.mod_goodsComment .list .time{ position:absolute; bottom:12px; right:16px; font-size:14px; color:#999;}
+
+/* 更多评论 */
+.box_goodsComment_more{ padding:0 0 2px 0;}
+.mod_goodsComment_more{ padding:12px 16px; background:#fff; text-align:center;}
+
+/* 没有评论 */
+.mod_goodsComment_no{ text-align:center; line-height:100px; color:#999;}
+
+
+/* 商品详情 */
+.mod_goodsDetail img{ width:100%;}
+.mod_goodsDetail p{ padding:0 16px;}
+
+
+
+
+
+
+/* ============================== 默认_商家 ============================== */
+#ajax_goods{position:absolute; left:0; top:0; bottom:0; right:0; z-index:102; display:none;}
+
+/* 选项卡 */
+.mod_storeTab{ position:relative; z-index:1; background:#fff; box-shadow:0 1px 10px rgba(0,0,0,.3);}
+.mod_storeTab .tab{ float:left; width:106px; position:relative; text-align:center; font-size:14px; color:#aaa; line-height:40px;}
+.mod_storeTab .tab.base{ width:108px;}
+.mod_storeTab .tab.choose{ color:#333;}
+.mod_storeTab .tab.choose span{ position:absolute; bottom:0; left:0; right:0; height:4px; font-size:0; line-height:0;}
+
+/* 店铺图片 */
+.box_storePic{ position:relative;}
+.box_storePic img{ width:100%; vertical-align:top;}
+
+
+/* 店铺信息 */
+.mod_storeInfo{ position:relative; color:#666;}
+.mod_storeInfo .title{ font-size:18px; color:#000; padding:16px 16px 0 16px; line-height:1; background:#fff;}
+.mod_storeInfo .level{ padding:8px 16px; background:#fff;}
+.mod_storeInfo .level .star{ width:100px; height:20px; background:url(../img/icon/star.png) no-repeat 0 0; background-size:cover;}
+.mod_storeInfo .contentMen{ padding:0 16px; font-size:14px; line-height:1.5; background:#fff;}
+.mod_storeInfo .address{ padding:0 16px; font-size:14px; line-height:1.5; background:#fff;}
+.mod_storeInfo .time{ padding:0 16px 10px 16px; font-size:14px; line-height:1.5; background:#fff;}
+.mod_storeInfo .phone{ padding:0 16px; font-size:14px; line-height:1.5; background:#fff;}
+
+/* 操作 */
+.box_storeAction{ padding:8px 0; }
+.mod_storeAction .love{ float:left; width:49%; margin:0 1% 0 0; text-align:center; background:#fff;}
+.mod_storeAction .love .icon{ width:45px; margin:auto; height:45px; background:url(../img/icon/love.png) no-repeat 0 0; background-size:cover;}
+.mod_storeAction .love .info{ font-size:14px; line-height:30px; color:#666;}
+
+.mod_storeAction .phone{ display:block;
+ text-align:center; background:#fff;}
+.mod_storeAction .phone .icon{ width:45px; margin:auto; height:45px; background:url(../img/icon/phone.png) no-repeat 0 0; background-size:cover;}
+.mod_storeAction .phone .info{ font-size:14px; line-height:30px; color:#666;}
+
+/* 商品列表 */
+.mod_store_goodsList{ padding:6px 2px;}
+.mod_store_goodsList .listBox{ float:left; padding:2px;}
+.mod_store_goodsList .list{ display:block; background:#fff; width:154px; padding:0 0 10px 0;}
+.mod_store_goodsList .list .picBox img{ width:100%;}
+.mod_store_goodsList .list .name{ font-size:14px; padding:10px 10px 8px 10px; line-height:1.3;}
+.mod_store_goodsList .list .price{ font-size:14px; line-height:1; padding:0 10px; }
+.mod_store_goodsList .list .price span{ padding:0 4px 0 0;}
+
+.next_page{ text-align:center; line-height:60px;}
+.next_page a{ color:#fff; font-size:14px;}
+
+/* 商家评论 */
+.mod_storeComment{ }
+.mod_storeComment .listBox{ padding:0 0 2px 0;}
+.mod_storeComment .list{ position:relative; padding:12px 16px; background:#fff;}
+.mod_storeComment .list .text{ line-height:1.3; font-size:16px;}
+.mod_storeComment .list .name{ font-size:14px; color:#999;}
+.mod_storeComment .list .time{ position:absolute; bottom:12px; right:16px; font-size:14px; color:#999;}
+
+/* 更多评论 */
+.box_storeComment_more{ padding:0 0 2px 0;}
+.mod_storeComment_more{ padding:12px 16px; background:#fff; text-align:center;}
+
+/* 没有评论 */
+.mod_storeComment_no{ text-align:center; line-height:100px; color:#999; }

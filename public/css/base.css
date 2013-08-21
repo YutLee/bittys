@@ -1,0 +1,61 @@
+﻿@charset "utf-8";
+/* 版权所有100MSH.COM
+==============================================================================================================================================================================================================================================================================================================================================================================================================================
+   重置和库：永远不变的东西，兼容旗下所有网站
+==============================================================================================================================================================================================================================================================================================================================================================================================================================
+*/
+
+/* ============================== 重置 ============================== */
+*{-webkit-tap-highlight-color:rgba(255,255,255,0);}
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display:block;}
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,dl,dd,form,textarea{ margin:0;}
+ul,ol,td,th,textarea,option{ padding:0;}
+ul,ol{ list-style:none;}
+a{ text-decoration:none; outline:0 none;
+-moz-user-select: none;  
+-webkit-user-select: none;  
+-ms-user-select: none;  
+-webkit-touch-callout:none;
+}
+img {border:0 none; vertical-align:top;}
+var{ display:inline-block; height:100%; width:0; vertical-align:middle; }/* 垂直居中专用标签 */
+table{ table-layout:fixed; border-spacing:0; border-collapse:collapse; width:100%; }
+
+/* ============================== 库 ============================== */
+/* 定位 */
+.ku_pos_r{ position:relative; }.ku_pos_a{ position:absolute; }
+/* 浮动 */
+.ku_fix{ zoom:1; }
+.ku_fix:after{ display:block; content:""; height:0; clear:both; overflow:hidden; visibility:hidden; }
+.ku_fl_l{ float:left; }
+.ku_fl_r{ float:right; }
+.ku_ov_h{ overflow:hidden; }
+.ku_ov_a{ overflow:auto; }
+.ku_cell{ display:table-cell; *display:inline-block; width:20000px; *width:auto; }
+
+/* 隐藏 */
+.ku_thide{ position:absolute !important; top:-100000px !important; overflow:hidden !important; height:0 !important; font-size:0 !important; line-height:0 !important; }
+/* 垂直居中 */
+.ku_va_m{ vertical-align:middle !important; display:inline-block; *display:inline; }
+
+/* 备用 
+
+:active{ -moz-user-select:none; -webkit-user-select:none; -ms-user-select:none; -khtml-user-select:none; user-select:none;}
+"Microsoft YaHei"
+
+*/
+/* ============================== 弹出框 ============================== */
+.popuphide{display:none;}
+.popup_shadow{ position:absolute; z-index:9998; left:0; right:0; top:0; bottom:0; background:rgba(0,0,0,.7); filter:alpha(opacity=70);}
+.popup{ position:absolute; z-index:9999; background:#fff; box-shadow:0 1px 10px rgba(0,0,0,.3);}
+.popup>.title{ height:59px; font-size:16px; line-height:59px; font-weight:bold; border-bottom:1px solid #ccc; padding:0 0 0 20px; background:#fff; box-shadow:0 1px 6px rgba(0,0,0,.1);}
+.popup>.container{position:absolute; left:0; right:0; top:60px; bottom:0; overflow:auto;}
+.popup>.close{position:absolute; right:0; top:0; height:59px; width:60px; cursor:pointer; font-size: 24px;text-align: center;line-height: 59px;}
+.popup>.close:hover{ background-color:#f0f0f0;}
+
+/* ============================== 出错提示 ============================== */
+.ajax_build_tip{ position:absolute; left:0; top:84px; z-index:20000; padding:9px 20px; border-radius:3px; box-shadow:0 3px 6px rgba(0,0,0,.3); font-weight:bold;}
+.ajax_build_tip.error{ background:#e74c3c; color:#fff;}
+.ajax_build_tip.success{ background:#27ae60; color:#fff;}
+.ajax_build_tip.warning{ background:#f9edbe; border:1px solid #f0c36d; color:#333;}
+
