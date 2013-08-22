@@ -18,7 +18,7 @@ class indexController extends commonController
 			'temp_url'	=> $temp_url,
 			'mod'		=> $mod,
 		);
-		
+		setcookie('mycookie', true);
 		echo json_encode($result);	
     }
 }

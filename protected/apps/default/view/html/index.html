@@ -14,8 +14,15 @@
 <script src="__PUBLIC__/js/baiduTemplate.min.js"></script>
 <script src="__PUBLIC__/js/iscroll.min.js"></script>
 <script src="__PUBLIC__/js/jquery.ba-hashchange-9.min.js"></script>
-<script src="__PUBLIC__/js/jquery-ajax-build.js"></script>
-<script src="__APPVIEW__/js/index.js"></script>
 
+<script>
+	$.ajax({
+		url: 'http://localhost/git/bittys/index.php?r=default/hadsearch/index&keyword=%E9%B1%BC',
+		headers: {'Accept': 'application/json'},
+		success: function(data) {
+			console.log(data);
+		}
+	});
+</script>
 </body>
 </html>
