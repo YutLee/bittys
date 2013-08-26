@@ -99,8 +99,9 @@ class hadsearchController extends commonController
 			'count_page'=> 3,			
 			'mod'		=> $mod
 		);
+		$this->display('html/index');
 		//echo $_COOKIE["mycookie"] ? 1 : 0;
-		echo getallheaders()['Accept'];
+		//echo getallheaders()['Accept'];
 		
 		//print_r($http_response_header); 
 		//echo json_encode($result);

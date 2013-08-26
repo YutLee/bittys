@@ -1,24 +1,23 @@
 <?php
 class indexController extends commonController
-{
+{ 
     public function index() {
-        $this->display('html/index');	
-    }
-    
-    public function home() {
 		//界面显示数据
-		$temp_url = array(
-			'0' => url('index/loadhtml') .'&html=html/home'
-		);
-		$mod = array(
-			'0' => '#mod_index'
-		);
+		$temp_url = ['html/home'];
+		$mod = ['#mod_index'];
+		$temp = [];
+		$data = '';
+		foreach($temp_url as $value) {
+			array_push($temp, $this->display($value, true));
+		}
 		$result = array(
-			'code'		=> 1,
 			'temp_url'	=> $temp_url,
-			'mod'		=> $mod,
+			'current_url' => $temp_url,
+			'temp' => $temp,
+			'data' => $data,
+			'mod' => $mod
 		);
-		setcookie('mycookie', true);
-		echo json_encode($result);	
+		
+		$this->loadPage($this->printJson($result));	
     }
 }
