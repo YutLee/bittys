@@ -10,22 +10,21 @@ class searchController extends commonController
 				'key' => array( '巧克力', '饼干', '牛肉干', '薯片', '酒', '糖', '鱼', '果冻' )
 				)
 		);
-		$temp_url = array(
-			'0' => url('index/loadhtml') .'&html=html/search_head',
-			'1' => url('index/loadhtml') .'&html=html/search'
-		);
-		$mod = array(
-			'0' => '#mod_index',
-			'1' => '#mod_index'
-		);
+		$temp_url = ['html/search_head', 'html/search'];
+		$mod = ['#mod_index', '#mod_index'];
+		$temp = [];
+		foreach($temp_url as $value) {
+			array_push($temp, $this->display($value, true));
+		}
 		$result = array(
-			'code'		=> 1,
-			'data'		=> $data,
 			'temp_url'	=> $temp_url,
-			'mod'		=> $mod
+			'current_url' => $temp_url,
+			'temp' => $temp,
+			'data' => $data,
+			'mod' => $mod
 		);
 		
-		echo json_encode($result);		
+		$this->loadPage($this->printJson($result));		
     }
 	
 }
