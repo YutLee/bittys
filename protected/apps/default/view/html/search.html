@@ -4,9 +4,9 @@
         <div class="mod_my_search" id="hot_keywords">
             <div class="title">热门搜索：</div>
             <div class="ku_fix"> 
-            	<#for(var i in key) {#>
-              		<a href="#index.php?r=default/hadsearch/index&keyword=<#=key[i]#>"><#=key[i]#></a>
-                <#}#>
+            	{@~it.key :value:index}}
+              		<a href="index.php?r=default/hadsearch/index&keyword={@=value}}">{@=value}}</a>
+                {@~}}
             </div>
         </div>
     </div>

@@ -21,7 +21,7 @@ class goodsController extends commonController
             }
         }
         $temp_url = array(
-			'0' => url('index/loadhtml') .'&html=html/goods'
+			'0' => 'html/goods'
 		);
 		$js_url = array(
 			'0' => __APPVIEW__ .'/js/setscroll.js'
@@ -29,17 +29,20 @@ class goodsController extends commonController
 		$mod = array(
 			'0' => '#mod_index'
 		);
+		$temp = array();
+		foreach($temp_url as $value) {
+			array_push($temp, $this->display($value, true));
+		}
 		$result = array(
-			'code'		=> 1,
-			'data'		=> $data,
-			'temp_url'	=> $temp_url,
-			'js_url'	=> $js_url,
-			'time'      => time(),
-			'is_login'  => true,
-			'mod'		=> $mod,
+			'current_url' => $temp_url,
+			'temp_url' 	  => $temp_url,
+			'temp'        => $temp,
+			'data'        => $data,
+			'mod'         => $mod,
+			'js_url'      => $js_url
 		);
 		
-		echo json_encode($result);
+		$this->loadPage($result);
     }
     
     public function base(  )

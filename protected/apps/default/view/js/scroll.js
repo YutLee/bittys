@@ -1,4 +1,4 @@
-var wrapper = ohm.ab.gv('#scroll');
+var wrapper = $('#scroll');
 
 var myScroll,
 	pullDownEl, pullDownOffset,
@@ -9,11 +9,11 @@ loaded();
 
 
 function pullDownAction () {
-	ohm.ab.reload();	
+	//ohm.ab.reload();	
 }
 
 function pullUpAction () {
-	if(!wrapper.data('data-page') || wrapper.data('data-page') < ohm.ab.countPage) {
+	if(!wrapper.data('data-page') || wrapper.data('data-page') < 5) {
 		if(!wrapper.data('data-page')) {
 			wrapper.data('data-page', 2);	
 		}else {
@@ -27,18 +27,18 @@ function pullUpAction () {
 		var page = wrapper.data('data-page');
 		var url = wrapper.data('data-url') + '&p=' + page;
 		setTimeout(function () {
-			ohm.ab.snapCache = ohm.ab.gv('#listOut');
-			ohm.ab.loadPage(url, true);
+			//ohm.ab.snapCache = $('#listOut');
+			//ohm.ab.loadPage(url, true);
 		}, 1000);	
 	}else {
-		ohm.tt.successTip('没有更多了');
+		//ohm.tt.successTip('没有更多了');
 	}
 }
 
 function loaded() {
-	pullDownEl = ohm.ab.gv('#pullDown')[0];
+	pullDownEl = $('#pullDown')[0];
 	pullDownOffset = pullDownEl.offsetHeight;
-	pullUpEl = ohm.ab.gv('#pullUp')[0];	
+	pullUpEl = $('#pullUp')[0];	
 	pullUpOffset = pullUpEl.offsetHeight;
 	
 	myScroll = new iScroll(wrapper[0], {

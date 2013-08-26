@@ -1,28 +1,3 @@
-/* 加载页面 */
-(function($, window, undefined) {
-	var ohm = window.ohm;
-	var ab = ohm.ab;
-	ohm.tt.delay = 2500;
-	ab.indexUrl = 'index.php?r=default/index/home'; 
-	ab.callback.onBeforeSend = function(url) {	//请求数据之前回调函数
-		if(url === '') {
-			
-		}else{
-			
-		}
-	};
-	ab.callback.onDataSuccess = function(url) {	//请求数据成功回调函数
-		
-	};
-	ab.callback.onTempComplete = function(url) {	//请求模板完成
-		
-	};
-	ab.callback.onNewDataError = function(msg) {
-		ohm.tt.errorTip(msg);
-	};
-	$(window).hashchange();
-})(jQuery, this);
-
 // 后退
 $('body').delegate('.js_back', 'click', function(){
 	history.back();

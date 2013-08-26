@@ -39,10 +39,11 @@ class commonController extends baseController
 	 * @param {Json} $data 页面模板和数据
 	 */
 	public function loadPage($data) {
+		$result = $this->printJson($data);
 		if($this->isFirstLoading()) {
-			$this->loadFrame($data);
+			$this->loadFrame($result);
 		}else {
-			echo $data;
+			echo $result;
 		}
 	}
 	

@@ -1,5 +1,5 @@
-var wrapper = ohm.ab.gv('.tab_wrapper')[0];
-var tabs = ohm.ab.gv('#tabs');
+var wrapper = $('.tab_wrapper')[0];
+var tabs = $('#tabs');
 var tabList = [];
 var iscroll = new iScroll(wrapper, {
 	snap: true,
@@ -9,10 +9,10 @@ var iscroll = new iScroll(wrapper, {
 	vScroll: false,
 	scrollbarClass: 'myScrollbar',
 	onSnapStart: function() {
-		var bdWidth = ohm.ab.gc().width(),
-			page = ohm.ab.gv('.tab_content');
+		var bdWidth = $(window).width(),
+			page = $('.tab_content');
 		page.width(bdWidth);
-		ohm.ab.gv('.tab_contents').width(page.width() * page.length);
+		$('.tab_contents').width(page.width() * page.length);
 		for(var i = 0; page[i] ; i++) {
 			var s = new iScroll(page[i], {checkDOMChanges: true, hScroll: false, scrollbarClass: 'myScrollbar'});
 			tabList.push(s);

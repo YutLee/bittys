@@ -70,41 +70,36 @@ class hadsearchController extends commonController
 		}
 		$data = $data ? $data : array('', array('no_data' => true));
 		if($currentPage && $currentPage > 1) {
-			$temp_url = array(
-				'0' => url('index/loadhtml') .'&html=html/search_result_page'
-			);
-			$mod = array(
-				'0' => $_POST['mod']
-			);
+			$temp_url = ['html/search_result_page'];
+			$mod = [$_POST['mod']];
+			$temp = [];
+			foreach($temp_url as $value) {
+				array_push($temp, $this->display($value, true));
+			}
 		}else {
-			$temp_url = array(
-				'0' => url('index/loadhtml') .'&html=html/search_head',
-				'1' => url('index/loadhtml') .'&html=html/search_result'
-			);
+			$temp_url = ['html/search_head', 'html/search_result'];
 			$mod = array(
 				'0' => '#mod_index',
 				'1' => '#mod_index'
 			);
+			$temp = [];
+			foreach($temp_url as $value) {
+				array_push($temp, $this->display($value, true));
+			}
 		}
 		$js_url = array(
 			'0' => __APPVIEW__ .'/js/scroll.js'
 		);
 		$result = array(
-			'code'		=> 1,
-			'data'		=> $data,
-			'temp_url'	=> $temp_url,
-			'js_url'	=> $js_url,
-			'time'      => time(),
-			'is_login'  => true,
+			'data' => $data,
+			'temp_url' => $temp_url,
+			'temp' => $temp,
+			'current_url' => $temp_url,
+			'js_url' => $js_url,
 			'count_page'=> 3,			
-			'mod'		=> $mod
+			'mod' => $mod
 		);
-		$this->display('html/index');
-		//echo $_COOKIE["mycookie"] ? 1 : 0;
-		//echo getallheaders()['Accept'];
-		
-		//print_r($http_response_header); 
-		//echo json_encode($result);
+		$this->loadPage($result);	
 	}
 
 }

@@ -18,6 +18,6 @@ class indexController extends commonController
 			'mod' => $mod
 		);
 		
-		$this->loadPage($this->printJson($result));	
+		$this->loadPage($result);	
     }
 }

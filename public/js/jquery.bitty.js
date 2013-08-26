@@ -1,5 +1,6 @@
 /**
  * jQuery bitty v1.0
+ * base jquery.history.js & doT.js
  * @author yutlee.cn@gmail.com
  * @date 2013-8-23
  * @update 2013-8-23
@@ -14,6 +15,22 @@
 	bt.currentUrlCache = []; //缓存当前模板url
 	bt.tempUrlCache = {}; //缓存模板url
 	bt.htmlCache = {};	//缓存模块
+	bt.jsCache = {}; //缓存javascript
+	
+	//自定义doT编译设置
+	doT.templateSettings = {
+		evaluate:    /\{\@([\s\S]+?)\}\}/g,
+		interpolate: /\{\@=([\s\S]+?)\}\}/g,
+		encode:      /\{\@!([\s\S]+?)\}\}/g,
+		use:         /\{\@#([\s\S]+?)\}\}/g,
+		define:      /\{\@##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
+		conditional: /\{\@\?(\?)?\s*([\s\S]*?)\s*\}\}/g,
+		iterate:     /\{\@~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g,
+		varname: 'it',
+		strip: true,
+		append: true,
+		selfcontained: false
+	};
 	
 	bt.log = function(message, level) {
 		if (window.console) {
@@ -92,14 +109,37 @@
 				}
 			}
 			if(that.isArray(data.js_url)) {
-				var i = 0,
-					len = data.js_url.length;
-				for(; i < len; i++) {
-					$('<script src="' + data.js_url[i] + '" />').appendTo('body');
-				}
+				that.loadJs(data.js_url);
 			}
 		}else {
 			that.log('参数data必要为json对象');	
+		}
+	};
+	
+	/**
+	 * bt.loadJs(url)
+	 * 加载页面javascript
+	 * @param {Array} url <script>标签的src属性
+	 */
+	bt.loadJs = function (url) {
+		var that = this,
+			i = 0,
+			len = url.length;
+		for (; i < len; i++) {
+			var now = url[i];
+			if(!that.jsCache[now]) {
+				loadOne(now, false);
+				that.jsCache[now] = now;
+			}else {
+				loadOne(now, true);
+			}
+		}
+		function loadOne(url, cache) {
+			$.ajax({
+				url: url,
+				cache: cache,
+				dataType: 'script'
+			});	
 		}
 	};
 	
