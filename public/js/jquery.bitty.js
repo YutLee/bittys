@@ -1,4 +1,58 @@
 /**
+ *	jQuery tip v1.0
+ *	Date: 2013-7-16
+ *	Update: 2013-7-16
+ */
+(function($, window, undefined) {
+	//'use strict';
+	var app = window.app = window.app || {},
+		tt = app.tt = app.tooltip = {};
+	tt.tipStatus = false;
+	tt.tipElement = null;
+	tt.animTime = 300;
+	tt.delay = 5000;
+	tt.tip = function(type, msg) {
+		var that = this;
+		if(!that.tipStatus) {
+			if(that.tipElement) {
+				that.tipElement.remove();	
+				that.tipStatus = true;
+			}
+			var left, top,
+				el = that.tipElement = $('<div class="ajax_build_tip ' + type + '" />').html(msg);
+			if(el.css('position') !== 'absolute') {
+				el.css({'position': 'absolute'});
+			}
+			if(!el.css('top')) {
+				el.css({'top': '30'});
+			}
+			
+			$('body').append(el.css({'visibility': 'hidden', 'display': 'block'}));
+			left = ($(window).width() - el.outerWidth()) * .5;
+			el.css({'left': left, 'visibility': 'visible', 'display': 'none'}).fadeIn(that.animTime);
+			setTimeout(function() {
+				el.fadeOut(that.animTime, function() {
+					el.remove();
+					that.tipStatus = false;
+				});
+			}, that.delay);	
+		}
+	};
+	
+	tt.errorTip = function(msg) {
+		this.tip('error', msg);
+	};
+	
+	tt.successTip = function(msg) {
+		this.tip('success', msg);
+	};
+	
+	tt.warningTip = function(msg) {
+		this.tip('warning', msg);
+	};
+})(jQuery, this);
+
+/**
  * jQuery bitty v1.0
  * base jquery.history.js & doT.js
  * @author yutlee.cn@gmail.com

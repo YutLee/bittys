@@ -13,7 +13,7 @@ $('body').delegate('.toSearch', 'click', function(){
 			var surl = '#index.php?r=default/hadsearch/index&keyword=' + keyword;
 			that.attr('href', surl);
 		}else{ 
-			ohm.tt.warningTip('请输入关键字');
+			//ohm.tt.warningTip('请输入关键字');
 			return false;
 		}
 	}
