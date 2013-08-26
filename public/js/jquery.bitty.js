@@ -116,16 +116,45 @@
 					'Accept': 'application/json',
 					'Request': ''	
 				};
+			that.isLinkClick = true;
 			$.ajax({
 				url: url,
 				dataType: 'json',
 				headers: headers,
+				beforeSend: function() {
+					History.pushState('', url, url);
+					History.replaceState('', url, url);
+				},
 				success: function(data) {
+					that.isLinkClick = false;
 					that.loadPage(data);
 				}
 			});
 			return false;	
 		});
 	};
+	
+	/**
+	 * bt.request()
+	 * 绑定历史地址事件
+	 */
+	History.Adapter.bind(window, 'statechange', function() {
+		var actualState = History.getState(false),
+			url = actualState.url,
+			headers = {
+				'Accept': 'application/json',
+				'Request': ''	
+			};
+		if(!bt.isLinkClick) {
+			$.ajax({
+				url: url,
+				dataType: 'json',
+				headers: headers,
+				success: function(data) {
+					bt.loadPage(data);
+				}
+			});
+		}
+	});
 	
 })(jQuery, window);
