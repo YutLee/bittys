@@ -53,9 +53,8 @@ class commonController extends baseController
 	 */
 	public function getNoCacheTemps($temp_url) {
 		$temp = array();
-		$request = $this->getTempId($temp_url);
-		foreach($request as $value) {
-			array_push($temp, $this->display($value, true));
+		foreach($temp_url as $key => $value) {
+			$temp[$key] = $this->display($value, true);
 		}
 		return $temp;
 	}
@@ -77,9 +76,19 @@ class commonController extends baseController
 	 * @param {Json} $data 页面模板和数据
 	 */
 	public function loadPage($data) {
+		$temp_id = array();
+		$temp = array();
 		$temp_url = $data['temp_url'];
 		if(is_array($temp_url) && count($temp_url) > 0) {
-			$data['temp'] = $this->getNoCacheTemps($temp_url);	//获取模板内容
+			$new_temp = $this->getTempId($temp_url);
+			foreach($new_temp as $key => $value) {
+				$temp_id['k'.$key] = $value;
+				$temp['k'.$key] = $this->display($value, true);
+				//array_push($data['temp_id'], array('0' => $key, '1' => $value));
+				//array_push($data['temp'], array('0' => $key, '1' => $this->display($value, true)));//获取模板内容
+			}
+			$data['temp_id'] = $temp_id;
+			$data['temp'] = $temp;
 		}
 		foreach($data as $key => $value) {
 			$now = $data[$key];

@@ -29,14 +29,8 @@ class goodsController extends commonController
 		$mod = array(
 			'0' => '#mod_index'
 		);
-		$temp = array();
-		foreach($temp_url as $value) {
-			array_push($temp, $this->display($value, true));
-		}
 		$result = array(
-			'current_url' => $temp_url,
 			'temp_url' 	  => $temp_url,
-			'temp'        => $temp,
 			'data'        => $data,
 			'mod'         => $mod,
 			'js_url'      => $js_url

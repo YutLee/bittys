@@ -10,18 +10,18 @@ class searchController extends commonController
 				'key' => array( '巧克力', '饼干', '牛肉干', '薯片', '酒', '糖', '鱼', '果冻' )
 				)
 		);
-		$temp_url = ['html/search_head', 'html/search'];
-		$mod = ['#mod_index', '#mod_index'];
-		$temp = [];
-		foreach($temp_url as $value) {
-			array_push($temp, $this->display($value, true));
-		}
+		$temp_url = array(
+			'0' => 'html/search_head', 
+			'1' => 'html/search'
+		);
+		$mod = array(
+			'0' => '#mod_index', 
+			'1' => '#mod_index'
+		);
 		$result = array(
-			'temp_url'	=> $temp_url,
-			'current_url' => $temp_url,
-			'temp' => $temp,
-			'data' => $data,
-			'mod' => $mod
+			'temp_url' => $temp_url,
+			'data'     => $data,
+			'mod'      => $mod
 		);
 		
 		$this->loadPage($result);		

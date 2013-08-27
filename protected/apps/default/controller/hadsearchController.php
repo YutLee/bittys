@@ -70,34 +70,31 @@ class hadsearchController extends commonController
 		}
 		$data = $data ? $data : array('', array('no_data' => true));
 		if($currentPage && $currentPage > 1) {
-			$temp_url = ['html/search_result_page'];
-			$mod = [$_POST['mod']];
-			$temp = [];
-			foreach($temp_url as $value) {
-				array_push($temp, $this->display($value, true));
-			}
+			$temp_url = array(
+				'0' => 'html/search_result_page'
+			);
+			$mod = array(
+				'0' => $_POST['mod']
+			);
 		}else {
-			$temp_url = ['html/search_head', 'html/search_result'];
+			$temp_url = array(
+				'0' => 'html/search_head', 
+				'1' => 'html/search_result'
+			);
 			$mod = array(
 				'0' => '#mod_index',
 				'1' => '#mod_index'
 			);
-			$temp = [];
-			foreach($temp_url as $value) {
-				array_push($temp, $this->display($value, true));
-			}
 		}
 		$js_url = array(
 			'0' => __APPVIEW__ .'/js/scroll.js'
 		);
 		$result = array(
-			'data' => $data,
-			'temp_url' => $temp_url,
-			'temp' => $temp,
-			'current_url' => $temp_url,
-			'js_url' => $js_url,
-			'count_page'=> 3,			
-			'mod' => $mod
+			'temp_url'   => $temp_url,
+			'data'       => $data,
+			'js_url'     => $js_url,
+			'count_page' => 3,			
+			'mod'        => $mod
 		);
 		$this->loadPage($result);	
 	}

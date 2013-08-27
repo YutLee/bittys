@@ -12,7 +12,7 @@ class storeController extends commonController
     {
 		$this->layout='';
         $id = in( $_GET['id'] );
-        $result = array( 'code' => 0, 'data'=> array(  ));
+        $result = array( 'code' => 0, 'data'=> array());
         if ( empty( $id ) ) {
             /* 显示店铺列表 */
         } else {
@@ -32,14 +32,8 @@ class storeController extends commonController
 		$mod = array(
 			'0' => '#mod_index'
 		);
-		$temp = array();
-		foreach($temp_url as $value) {
-			array_push($temp, $this->display($value, true));
-		}
 		$result = array(
-			'current_url' => $temp_url,
 			'temp_url'    => $temp_url,
-			'temp'        => $temp,
 			'data'        => $data,
 			'mod'         => $mod,
 			'js_url'      => $js_url

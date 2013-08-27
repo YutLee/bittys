@@ -12,10 +12,8 @@ class indexController extends commonController
 		);
 		$result = array(
 			'temp_url'	=> $temp_url,
-			'temp' => $temp,
 			'data' => $data,
 			'mod' => $mod,
-			'daf' => array()
 		);
 		$this->loadPage($result);	
     }

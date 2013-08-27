@@ -147,12 +147,11 @@
 					var html;
 					
 					if(!that.tempCache[tempUrl] && !that.isFunction(that.tempCache[tempUrl])) {
-						that.tempCache[tempUrl] = doT.template(data.temp[i]);
+						that.tempCache[tempUrl] = doT.template(data.temp['k' + i]);
 						that.tempUrlCache.push(tempUrl);
 					}
 					
 					that.currentUrlCache.push(tempUrl);
-					
 					html = (that.isArray(data.data)) ? that.tempCache[tempUrl](data.data[i]) : that.tempCache[tempUrl]('');
 					$(data.mod[i]).append($('<div id="' + tempId +'"/>').html(html));
 					
