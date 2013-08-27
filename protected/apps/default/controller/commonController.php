@@ -46,23 +46,18 @@ class commonController extends baseController
 	}
 	
 	/**
-	 * getNotShowerId()
-	 * 获取客户端新页面在发送请求页面中未出现的模块
-	 * @param {Array} $current 当前页面所有模板id
-	 * @return {Array} 返回客户端新页面在发送请求页面中未出现的模块id
+	 * getNoCacheTemps()
+	 * 获取客户端未缓存的模板
+	 * @param {Array} $temp_url 当前页面所有模板id
+	 * @return {Array} 返回客户端未缓存的模板
 	 */
-	public function getNotShowerId($current) {
-		return array_diff($current, $this->getRequest()['current']);
-	}
-	
-	/**
-	 * getNotShower()
-	 * 获取客户端新页面在发送请求页面中为出现的数据
-	 * @param {Array} $data 当前页面所有数据
-	 * @return {Array} 返回客户端新页面在发送请求页面中为出现的数据
-	 */
-	public function getNotShower($data) {
-		
+	public function getNoCacheTemps($temp_url) {
+		$temp = array();
+		$request = $this->getTempId($temp_url);
+		foreach($request as $value) {
+			array_push($temp, $this->display($value, true));
+		}
+		return $temp;
 	}
 	
 	/**
@@ -82,6 +77,16 @@ class commonController extends baseController
 	 * @param {Json} $data 页面模板和数据
 	 */
 	public function loadPage($data) {
+		$temp_url = $data['temp_url'];
+		if(is_array($temp_url) && count($temp_url) > 0) {
+			$data['temp'] = $this->getNoCacheTemps($temp_url);	//获取模板内容
+		}
+		foreach($data as $key => $value) {
+			$now = $data[$key];
+			if(!$now || (is_array($data[$key]) && count($data[$key]) == 0)) {
+				unset($data[$key]);
+			}
+		}
 		$result = $this->printJson($data);
 		if($this->isFirstLoading()) {
 			$this->loadFrame($result);
@@ -98,7 +103,7 @@ class commonController extends baseController
 	 */
 	public function printJson($data) {
 		if($data['code'] == '') {
-			$data['code'] = 1;
+			//$data['code'] = 1;
 		}
 		return json_encode($data);
 	}

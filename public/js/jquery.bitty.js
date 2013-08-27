@@ -144,6 +144,7 @@
 				for(; i < len; i++) {
 					var tempUrl = data.temp_url[i];
 					var tempId = tempUrl.replace(/\//g, '-');
+					var html;
 					
 					if(!that.tempCache[tempUrl] && !that.isFunction(that.tempCache[tempUrl])) {
 						that.tempCache[tempUrl] = doT.template(data.temp[i]);
@@ -151,7 +152,8 @@
 					}
 					
 					that.currentUrlCache.push(tempUrl);
-					var html = that.tempCache[tempUrl](data.data[i]);
+					
+					html = (that.isArray(data.data)) ? that.tempCache[tempUrl](data.data[i]) : that.tempCache[tempUrl]('');
 					$(data.mod[i]).append($('<div id="' + tempId +'"/>').html(html));
 					
 					if(!that.htmlCache[url] && !that.isObject(that.htmlCache[url])) {
@@ -163,7 +165,6 @@
 					}
 				}
 				bt.headers.Temps = that.tempUrlCache.join(',');
-				bt.headers.Current = that.currentUrlCache.join(',');
 			}
 			if(that.isArray(data.js_url)) {
 				that.loadJs(data.js_url);
