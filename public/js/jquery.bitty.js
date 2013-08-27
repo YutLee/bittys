@@ -67,9 +67,13 @@
 
 	bt.tempCache = {};	//缓存模板
 	bt.currentUrlCache = []; //缓存当前模板url
-	bt.tempUrlCache = {}; //缓存模板url
+	bt.tempUrlCache = []; //缓存模板url
 	bt.htmlCache = {};	//缓存模块
 	bt.jsCache = {}; //缓存javascript
+	
+	bt.headers = {
+		'Accept': 'application/json'
+	};
 	
 	//自定义doT编译设置
 	doT.templateSettings = {
@@ -134,22 +138,19 @@
 					l = that.currentUrlCache.length,
 					url = window.location.href;
 				for(; j < l; j++) {
-					$('#' + that.currentUrlCache[j]).remove();
+					$('#' + that.currentUrlCache[j].replace(/\//g, '-')).remove();
 				}
 				that.currentUrlCache = [];
 				for(; i < len; i++) {
 					var tempUrl = data.temp_url[i];
 					var tempId = tempUrl.replace(/\//g, '-');
 					
-					if(!that.tempUrlCache[tempUrl]) {
-						that.tempUrlCache[tempUrl] = tempUrl;
-					}
-					
 					if(!that.tempCache[tempUrl] && !that.isFunction(that.tempCache[tempUrl])) {
 						that.tempCache[tempUrl] = doT.template(data.temp[i]);
+						that.tempUrlCache.push(tempUrl);
 					}
 					
-					that.currentUrlCache.push(tempId);
+					that.currentUrlCache.push(tempUrl);
 					var html = that.tempCache[tempUrl](data.data[i]);
 					$(data.mod[i]).append($('<div id="' + tempId +'"/>').html(html));
 					
@@ -161,6 +162,8 @@
 						}
 					}
 				}
+				bt.headers.Temps = that.tempUrlCache.join(',');
+				bt.headers.Current = that.currentUrlCache.join(',');
 			}
 			if(that.isArray(data.js_url)) {
 				that.loadJs(data.js_url);
@@ -205,16 +208,12 @@
 		var that = this;
 		$('body').delegate('a', 'click', function() {
 			var t = $(this),
-				url = t.attr('href'),
-				headers = {
-					'Accept': 'application/json',
-					'Request': ''	
-				};
+				url = t.attr('href');
 			that.isLinkClick = true;
 			$.ajax({
 				url: url,
 				dataType: 'json',
-				headers: headers,
+				headers: that.headers,
 				beforeSend: function() {
 					History.pushState('', url, url);
 					History.replaceState('', url, url);
@@ -234,16 +233,12 @@
 	 */
 	History.Adapter.bind(window, 'statechange', function() {
 		var actualState = History.getState(false),
-			url = actualState.url,
-			headers = {
-				'Accept': 'application/json',
-				'Request': ''	
-			};
+			url = actualState.url;
 		if(!bt.isLinkClick) {
 			$.ajax({
 				url: url,
 				dataType: 'json',
-				headers: headers,
+				headers: bt.headers,
 				success: function(data) {
 					bt.loadPage(data);
 				}

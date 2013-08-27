@@ -12,7 +12,7 @@ class goodsController extends commonController
     {
 		$this->layout='';
         $id = in( $_GET['id'] );
-        $result = array( 'code' => 0, 'data'=> array(  ));
+        $data = array();
         if ( empty( $id ) ) {
             /* 显示产品列表 */
         } else {
