@@ -68,8 +68,10 @@
 	bt.tempCache = {};	//缓存模板
 	bt.currentUrlCache = []; //缓存当前模板url
 	bt.tempUrlCache = []; //缓存模板url
+	bt.pageCache = {}; //缓存页面相关内容
 	bt.htmlCache = {};	//缓存模块
 	bt.jsCache = {}; //缓存javascript
+	bt.cssCache = {}; //缓存css
 	
 	bt.headers = {
 		'Accept': 'application/json'
@@ -168,13 +170,10 @@
 	bt.loadPage = function(url, data) {
 		var that = this,
 			tempId = data.temp_id;
-		if(that.isArray(tempId)) {
-			var i = 0,
-				len = tempId.length;
-			
+		if(that.isObject(tempId)) {
+			var len = tempId.length;
 			var new_temps = data.temp_url;
 			var diff = that.arrayDiff(that.currentUrlCache, new_temps);
-			
 			diff = diff.length > 0 ? diff : new_temps;
 			var k = 0, 
 				l = diff.length;
@@ -183,30 +182,28 @@
 				var id = diff[k].replace(/\//g, '-');
 				if($('#' + id).length > 0) {
 					$('#' + id).remove();	//删除在当前页面但不在新页面的模块
-					that.log('删除在当前页面但不在新页面的模块' + id);
+					console.log('删除在当前页面但不在新页面的模块' + id);
 				}
 			}
 			
 			that.currentUrlCache = new_temps;
 			
-			for(; i < len; i++) {
-				var key = tempId[i],
-					id = key.replace(/\//g, '-'),
-					k = 'p' + i,
+			for(var key in tempId) {
+				var value = tempId[key],
+					id = value.replace(/\//g, '-'),
 					html;
-				if(!that.tempCache[key] && !that.isFunction(that.tempCache[key])) {
-					that.tempCache[key] = doT.template(data.temp[k]);
-					that.tempUrlCache.push(key);
+				if(!that.tempCache[value] && !that.isFunction(that.tempCache[value])) {
+					that.tempCache[value] = doT.template(data.temp[key]);
+					that.tempUrlCache.push(value);
 				}
-				
-				html = (that.isObject(data.data)) ? that.tempCache[key](data.data[k]) : that.tempCache[key]('');
+				html = (that.isObject(data.data)) ? that.tempCache[value](data.data[key]) : that.tempCache[value]('');
 				
 				if($('#' + id).length > 0) {	
 					$('#' + id).remove();	//删除要替换的已存在当前页面的模块
-					that.log('删除要替换的已存在当前页面的模块' + id);
+					console.log('删除要替换的已存在当前页面的模块' + id);
 				}
 				
-				$(data.mod[k]).append($('<div id="' + id +'"/>').html(html));
+				$(data.mod[key]).append($('<div id="' + id +'"/>').html(html));
 			}
 		}
 	}
@@ -263,13 +260,37 @@
 	};
 	
 	/**
+	 * bt.setHeaders()
+	 * 设置发送的头部信息
+	 * @param {String} url 必须，新页面地址
+	 * @param {String} temps 可缺省，请求新页面所需的模板id；多个模板id用","隔开；缺省时，服务器返回完整的页面模板；
+	 */
+	bt.setHeaders = function(url, temps) {
+		var that = this;
+		console.log(url);
+		if(!that.pageCache[url]) {
+			that.pageCache[url] = {};
+		}
+		if(!that.pageCache[url]['temps']) {
+			that.pageCache[url]['temps'] = temps;
+		}
+		console.log(that.pageCache[url]['temps']);
+		that.headers['Temps'] = that.pageCache[url]['temps'] ? that.pageCache[url]['temps'] : '';
+		
+		var noExist = that.arrayDiff(that.headers.Temps.split(','), that.tempUrlCache);
+		that.headers['NoExist'] = noExist.join(',');
+	};
+	
+	/**
 	 * bt.request()
 	 * 加载新页面，Ajax请求获取数据
 	 * @param {String} url 必须，新页面地址
+	 * @param {String} temps 可缺省，请求新页面所需的模板id；多个模板id用","隔开；缺省时，服务器返回完整的页面模板；
 	 */
-	bt.request = function(url) {
+	bt.request = function(url, temps) {
 		var that = this;
 		that.isLinkClick = true;
+		that.setHeaders(url, temps);
 		$.ajax({
 			url: url,
 			dataType: 'json',
@@ -281,6 +302,9 @@
 			success: function(data) {
 				that.isLinkClick = false;
 				that.loadPage(url, data);
+			},
+			error: function(xhr) {
+				console.log(xhr);	
 			}
 		});
 	};
@@ -291,20 +315,22 @@
 	 */
 	bt.bindLink = function() {
 		$('body').delegate('a', 'click', function() {
-			var url = $(this).attr('href');
-			bt.request(url);
+			var t = $(this),
+				url = t.attr('href'),
+				temps = t.attr('data-temps');
+			bt.request(url, temps);
 			return false;	
 		});	
 	};
 	
 	/**
-	 * bt.request()
 	 * 绑定历史地址事件
 	 */
 	History.Adapter.bind(window, 'statechange', function() {
 		var actualState = History.getState(false),
 			url = actualState.url;
 		if(!bt.isLinkClick) {
+			bt.setHeaders(url);
 			$.ajax({
 				url: url,
 				dataType: 'json',

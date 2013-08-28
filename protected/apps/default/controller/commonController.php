@@ -62,14 +62,16 @@ class commonController extends baseController
 		$request = $this->getRequest();
 		$re_temps = $request['temps'];	//客户端请求的模板
 		$no_exist = $request['no_exist'];	//未缓存的模板
-		$new_temps = (is_array($re_temps) && count($re_temps) > 0 && $re_temps[0] != '') ? array_intersect_assoc($temp_url, $re_temps) : $temp_url;
-		$new_no_exist = ( is_array($no_exist) && count($no_exist) > 0 && $no_exist[0] != '') ? array_intersect_assoc($temp_url, $no_exist): $temp_url;
+		$new_temps = (is_array($re_temps) && count($re_temps) > 0 && $re_temps[0] != '') ? array_intersect($temp_url, $re_temps) : $temp_url;
+		$new_no_exist = ( is_array($no_exist) && count($no_exist) > 0 && $no_exist[0] != '') ? array_intersect($temp_url, $no_exist): $temp_url;
 		$p = 'p';
 		$temp = array();
+		$temp_id = array();
 		$data_data = array();
 		$mod = array();
 		foreach($new_temps as $key => $value) {	//获取请求的数据
 			$k = $p.$key;
+			$temp_id[$k] = $value;
 			$data_data[$k] = $data['data'][$key];
 			$mod[$k] = $data['mod'][$key];
 		}
@@ -79,7 +81,7 @@ class commonController extends baseController
 		}
 		$new_data = array(
 			'temp_url' => $temp_url,
-			'temp_id'  => $new_temps,
+			'temp_id'  => $temp_id,
 			'temp'     => $temp,
 			'data'	   => $data_data,
 			'mod'      => $mod
