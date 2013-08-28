@@ -66,7 +66,7 @@ class commonController extends baseController
 	 */
 	public function loadFrame($data = '{}') {
 		$this->display('html/header');
-		echo '<script>(function(window, undefined) {var app = window.app = window.app || {}, bt = app.bt;bt.initData = '.$data.';bt.loadPage(bt.initData);bt.request();})(window);</script>';
+		echo '<script>(function(window, undefined) {var app = window.app = window.app || {}, bt = app.bt;bt.initData = '.$data.';bt.loadPage(window.location.href,bt.initData);bt.bindLink();})(window);</script>';
 		$this->display('html/footer');
 	}
 	

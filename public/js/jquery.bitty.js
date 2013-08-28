@@ -127,9 +127,10 @@
 	/**
 	 * bt.loadPage(data)
 	 * 加载页面
-	 * @param {Json} data 页面数据和模板
+	 * @param {String} url 必须，新页面地址
+	 * @param {Json} data 必须，新页面数据和模板
 	 */
-	bt.loadPage = function(data) {
+	bt.loadPage = function(url, data) {
 		var that = this;
 		if(that.isObject(data)) {
 			if(that.isArray(data.temp_url)) {
@@ -207,7 +208,7 @@
 	 * 加载页面css
 	 * @param {Array} url <link>标签的href属性
 	 */
-	bt.loadCsss = function (url) {
+	bt.loadCss = function (url) {
 		var that = this,
 			i = 0,
 			len;
@@ -225,29 +226,37 @@
 	
 	/**
 	 * bt.request()
-	 * 绑定链接点击事件，Ajax请求获取数据
+	 * 加载新页面，Ajax请求获取数据
+	 * @param {String} url 必须，新页面地址
 	 */
-	bt.request = function() {
+	bt.request = function(url) {
 		var that = this;
-		$('body').delegate('a', 'click', function() {
-			var t = $(this),
-				url = t.attr('href');
-			that.isLinkClick = true;
-			$.ajax({
-				url: url,
-				dataType: 'json',
-				headers: that.headers,
-				beforeSend: function() {
-					History.pushState('', url, url);
-					History.replaceState('', url, url);
-				},
-				success: function(data) {
-					that.isLinkClick = false;
-					that.loadPage(data);
-				}
-			});
-			return false;	
+		that.isLinkClick = true;
+		$.ajax({
+			url: url,
+			dataType: 'json',
+			headers: that.headers,
+			beforeSend: function() {
+				History.pushState('', url, url);
+				History.replaceState('', url, url);
+			},
+			success: function(data) {
+				that.isLinkClick = false;
+				that.loadPage(url, data);
+			}
 		});
+	};
+	
+	/**
+	 * bt.bindLink()
+	 * 绑定a链接点击事件
+	 */
+	bt.bindLink = function() {
+		$('body').delegate('a', 'click', function() {
+			var url = $(this).attr('href');
+			bt.request(url);
+			return false;	
+		});	
 	};
 	
 	/**
@@ -263,7 +272,7 @@
 				dataType: 'json',
 				headers: bt.headers,
 				success: function(data) {
-					bt.loadPage(data);
+					bt.loadPage(url, data);
 				}
 			});
 		}
