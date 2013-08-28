@@ -165,9 +165,8 @@
 				}
 				bt.headers.Temps = that.tempUrlCache.join(',');
 			}
-			if(that.isArray(data.js_url)) {
-				that.loadJs(data.js_url);
-			}
+			that.loadJs(data.js_url);
+			that.loadCss(data.css_url);
 		}else {
 			that.log('参数data必要为json对象');	
 		}
@@ -181,14 +180,17 @@
 	bt.loadJs = function (url) {
 		var that = this,
 			i = 0,
+			len;
+		if(that.isArray(url)) {
 			len = url.length;
-		for (; i < len; i++) {
-			var now = url[i];
-			if(!that.jsCache[now]) {
-				loadOne(now, false);
-				that.jsCache[now] = now;
-			}else {
-				loadOne(now, true);
+			for (; i < len; i++) {
+				var now = url[i];
+				if(!that.jsCache[now]) {
+					loadOne(now, false);
+					that.jsCache[now] = now;
+				}else {
+					loadOne(now, true);
+				}
 			}
 		}
 		function loadOne(url, cache) {
@@ -197,6 +199,27 @@
 				cache: cache,
 				dataType: 'script'
 			});	
+		}
+	};
+	
+	/**
+	 * bt.loadCss(url)
+	 * 加载页面css
+	 * @param {Array} url <link>标签的href属性
+	 */
+	bt.loadCsss = function (url) {
+		var that = this,
+			i = 0,
+			len;
+		if(that.isArray(url)) {
+			len = url.length;
+			for (; i < len; i++) {
+				var now = url[i];
+				if(!that.cssCache[now]) {
+					$('head').append('<link rel="stylesheet" href="' + now + '" />');
+					that.cssCache[now] = now;
+				}
+			}
 		}
 	};
 	
