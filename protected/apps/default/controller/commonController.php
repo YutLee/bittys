@@ -12,6 +12,20 @@ class commonController extends baseController
 		$page = $_GET['html'];
 		$this->display($page);	
 	}
+
+	/**
+	 * loadFrame($data)
+	 * 加载页面基本框架
+	 * @param {Json} $data 页面数据
+	 */
+	public function loadFrame($data) {
+		if($data == '') {
+			$data = '{}';
+		}
+		$this->display('html/header');
+		echo '<script>(function(window, undefined) {var app = window.app = window.app || {}, bt = app.bt;bt.initData = '.$data.';bt.loadPage(window.location.href,bt.initData);bt.bindLink();})(window);</script>';
+		$this->display('html/footer');
+	}
 	
 	/**
 	 * isFirstLoading()
@@ -19,7 +33,8 @@ class commonController extends baseController
 	 * @return {Boolean} 返回true则是首次加载
 	 */
 	public function isFirstLoading() {
-		return (getallheaders()['Accept'] == 'application/json') ? false : true;
+		$headers = getallheaders();
+		return ($headers['Accept'] == 'application/json') ? false : true;
 	}
 	
 	/**
@@ -28,46 +43,13 @@ class commonController extends baseController
 	 * @return {Object} 返回客户端请求的数据
 	 */
 	public function getRequest() {
+		$headers = getallheaders();
 		$request = array(
-			'temps' => explode(',', getallheaders()['Temps']),
-			'current' => explode(',', getallheaders()['Current'])
+			'temps' => explode(',', $headers['Temps']),
+			'no_exist' => explode(',', $headers['NoExist']),
+			'current' => explode(',', $headers['Current'])
 		);
 		return $request;
-	}
-	
-	/**
-	 * getTempId()
-	 * 获取客户端未缓存的模板
-	 * @param {Array} $temps 当前页面所有模板id
-	 * @return {Array} 返回客户端未缓存的模板id
-	 */
-	public function getTempId($temps) {
-		return array_diff($temps, $this->getRequest()['temps']);
-	}
-	
-	/**
-	 * getNoCacheTemps()
-	 * 获取客户端未缓存的模板
-	 * @param {Array} $temp_url 当前页面所有模板id
-	 * @return {Array} 返回客户端未缓存的模板
-	 */
-	public function getNoCacheTemps($temp_url) {
-		$temp = array();
-		foreach($temp_url as $key => $value) {
-			$temp[$key] = $this->display($value, true);
-		}
-		return $temp;
-	}
-	
-	/**
-	 * loadFrame($data)
-	 * 加载页面基本框架
-	 * @param {Json} $data 页面数据
-	 */
-	public function loadFrame($data = '{}') {
-		$this->display('html/header');
-		echo '<script>(function(window, undefined) {var app = window.app = window.app || {}, bt = app.bt;bt.initData = '.$data.';bt.loadPage(window.location.href,bt.initData);bt.bindLink();})(window);</script>';
-		$this->display('html/footer');
 	}
 	
 	/**
@@ -76,6 +58,53 @@ class commonController extends baseController
 	 * @param {Json} $data 页面模板和数据
 	 */
 	public function loadPage($data) {
+		$temp_url = $data['temp_url'];
+		$request = $this->getRequest();
+		$re_temps = $request['temps'];	//客户端请求的模板
+		$no_exist = $request['no_exist'];	//未缓存的模板
+		$new_temps = (is_array($re_temps) && count($re_temps) > 0 && $re_temps[0] != '') ? array_intersect_assoc($temp_url, $re_temps) : $temp_url;
+		$new_no_exist = ( is_array($no_exist) && count($no_exist) > 0 && $no_exist[0] != '') ? array_intersect_assoc($temp_url, $no_exist): $temp_url;
+		$p = 'p';
+		$temp = array();
+		$data_data = array();
+		$mod = array();
+		foreach($new_temps as $key => $value) {	//获取请求的数据
+			$k = $p.$key;
+			$data_data[$k] = $data['data'][$key];
+			$mod[$k] = $data['mod'][$key];
+		}
+		foreach($new_no_exist as $key => $value) {	//获取未缓存的模板
+			$k = $p.$key;
+			$temp[$k] = $this->display($value, true);
+		}
+		$new_data = array(
+			'temp_url' => $temp_url,
+			'temp_id'  => $new_temps,
+			'temp'     => $temp,
+			'data'	   => $data_data,
+			'mod'      => $mod
+		);
+		$merge_data = array_merge($data, $new_data);
+		foreach($merge_data['data'] as $key => $value) {
+			if(!$value || $value == '') {
+				unset($merge_data['data'][$key]);	//删除空的数据
+			}
+		}
+		foreach($merge_data as $key => $value) {
+			if(!$value || (is_array($value) && count($value) == 0)) {
+				unset($merge_data[$key]);
+			}
+		}
+		
+		$result = $this->printJson($merge_data);
+		if($this->isFirstLoading()) {
+			$this->loadFrame($result);
+		}else {
+			echo $result;
+		}
+	}
+	
+	public function loadPage222($data) {
 		$temp_id = array();
 		$temp = array();
 		$temp_url = $data['temp_url'];

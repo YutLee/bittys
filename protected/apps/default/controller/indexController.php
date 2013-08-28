@@ -11,10 +11,10 @@ class indexController extends commonController
 			'0' => '#mod_index'
 		);
 		$result = array(
-			'temp_url'	=> $temp_url,
-			'data' => $data,
-			'mod' => $mod,
+			'temp_url' => $temp_url,
+			'mod'      => $mod
 		);
 		$this->loadPage($result);	
     }
 }
+?>

@@ -7,7 +7,8 @@ class searchController extends commonController
 		$data = array(
 			'0' => '',
 			'1' => array(
-				'key' => array( '巧克力', '饼干', '牛肉干', '薯片', '酒', '糖', '鱼', '果冻' )
+				'key' => array( '巧克力', '饼干', '牛肉干', '薯片', '酒', '糖', '鱼', '果冻' ),
+				'link' => 'html/search_result'
 				)
 		);
 		$temp_url = array(

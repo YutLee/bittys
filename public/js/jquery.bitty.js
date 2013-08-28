@@ -125,53 +125,91 @@
 	};
 	
 	/**
+	 * bt.arrayDiff(array1, array2)
+	 * 对比返回在 array1 中但是不在 array2 中的值。
+	 * @param {Array} array1 必须，要被对比的数组
+	 * @param {Array} array2 必须，和这个数组进行比较
+	 */
+	bt.arrayDiff = function(array1, array2) {
+		var that = this;
+		if(!that.isArray(array1)) {
+			that.log('参数' + array1 + '不是数组');
+			return false;
+		}
+		if(!that.isArray(array2)) {
+			that.log('参数' + array2 + '不是数组');
+			return false;
+		}
+		if(that.isArray(array1) && that.isArray(array2)) {
+			var newArray = [],
+				k1 = 0,
+				len1 = array1.length,
+				len2 = array2.length;
+			for(; k1 < len1; k1++) {
+				for(var k2 = 0; k2 < len2; k2++) {
+					if(array1[k1] === array2[k2]) {
+						break;
+					}
+					if(k2 === len2 - 1 && array1[k1] !== array2[k2]) {
+						newArray.push(array1[k1]);
+					}
+				}
+			}
+			return newArray;
+		}
+	};
+	
+	/**
 	 * bt.loadPage(data)
 	 * 加载页面
 	 * @param {String} url 必须，新页面地址
 	 * @param {Json} data 必须，新页面数据和模板
 	 */
 	bt.loadPage = function(url, data) {
-		var that = this;
-		if(that.isObject(data)) {
-			if(that.isArray(data.temp_url)) {
-				var i = 0, j = 0,
-					len = data.temp_url.length,
-					l = that.currentUrlCache.length,
-					url = window.location.href;
-				for(; j < l; j++) {
-					$('#' + that.currentUrlCache[j].replace(/\//g, '-')).remove();
+		var that = this,
+			tempId = data.temp_id;
+		if(that.isArray(tempId)) {
+			var i = 0,
+				len = tempId.length;
+			
+			var new_temps = data.temp_url;
+			var diff = that.arrayDiff(that.currentUrlCache, new_temps);
+			
+			diff = diff.length > 0 ? diff : new_temps;
+			var k = 0, 
+				l = diff.length;
+			
+			for(; k < l; k++) {
+				var id = diff[k].replace(/\//g, '-');
+				if($('#' + id).length > 0) {
+					$('#' + id).remove();	//删除在当前页面但不在新页面的模块
+					that.log('删除在当前页面但不在新页面的模块' + id);
 				}
-				that.currentUrlCache = [];
-				for(; i < len; i++) {
-					var tempUrl = data.temp_url[i];
-					var tempId = tempUrl.replace(/\//g, '-');
-					var html;
-					
-					if(!that.tempCache[tempUrl] && !that.isFunction(that.tempCache[tempUrl])) {
-						that.tempCache[tempUrl] = doT.template(data.temp['k' + i]);
-						that.tempUrlCache.push(tempUrl);
-					}
-					
-					that.currentUrlCache.push(tempUrl);
-					html = (that.isArray(data.data)) ? that.tempCache[tempUrl](data.data[i]) : that.tempCache[tempUrl]('');
-					$(data.mod[i]).append($('<div id="' + tempId +'"/>').html(html));
-					
-					if(!that.htmlCache[url] && !that.isObject(that.htmlCache[url])) {
-						that.htmlCache[url] = {};
-					}else {
-						if(!that.htmlCache[url][tempUrl]) {
-							that.htmlCache[url][tempUrl] = html;
-						}
-					}
-				}
-				bt.headers.Temps = that.tempUrlCache.join(',');
 			}
-			that.loadJs(data.js_url);
-			that.loadCss(data.css_url);
-		}else {
-			that.log('参数data必要为json对象');	
+			
+			that.currentUrlCache = new_temps;
+			
+			for(; i < len; i++) {
+				var key = tempId[i],
+					id = key.replace(/\//g, '-'),
+					k = 'p' + i,
+					html;
+				if(!that.tempCache[key] && !that.isFunction(that.tempCache[key])) {
+					that.tempCache[key] = doT.template(data.temp[k]);
+					that.tempUrlCache.push(key);
+				}
+				
+				html = (that.isObject(data.data)) ? that.tempCache[key](data.data[k]) : that.tempCache[key]('');
+				
+				if($('#' + id).length > 0) {	
+					$('#' + id).remove();	//删除要替换的已存在当前页面的模块
+					that.log('删除要替换的已存在当前页面的模块' + id);
+				}
+				
+				$(data.mod[k]).append($('<div id="' + id +'"/>').html(html));
+			}
 		}
-	};
+	}
 	
 	/**
 	 * bt.loadJs(url)
