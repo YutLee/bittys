@@ -135,11 +135,11 @@
 	bt.arrayDiff = function(array1, array2) {
 		var that = this;
 		if(!that.isArray(array1)) {
-			that.log('参数' + array1 + '不是数组');
+			console.log('参数 array1：' + array1 + '不是数组');
 			return false;
 		}
 		if(!that.isArray(array2)) {
-			that.log('参数' + array2 + '不是数组');
+			console.log('参数 array2：' + array2 + '不是数组');
 			return false;
 		}
 		if(that.isArray(array1) && that.isArray(array2)) {
@@ -171,7 +171,6 @@
 		var that = this,
 			tempId = data.temp_id;
 		if(that.isObject(tempId)) {
-			var len = tempId.length;
 			var new_temps = data.temp_url;
 			var diff = that.arrayDiff(that.currentUrlCache, new_temps);
 			diff = diff.length > 0 ? diff : new_temps;
@@ -187,6 +186,7 @@
 			}
 			
 			that.currentUrlCache = new_temps;
+			that.refreshPageCache();
 			
 			for(var key in tempId) {
 				var value = tempId[key],
@@ -204,7 +204,9 @@
 				}
 				
 				$(data.mod[key]).append($('<div id="' + id +'"/>').html(html));
+				console.log('载人新模块："' + id + '"');
 			}
+			
 		}
 	}
 	
@@ -260,6 +262,27 @@
 	};
 	
 	/**
+	 * bt.refreshPageCache()
+	 * 更新所有页面缓存信息
+	 */
+	bt.refreshPageCache = function() {
+		var that = this;
+		
+		for(var key in that.pageCache) {
+			if(!that.pageCache[key]['temps'] && that.currentUrlCache) {
+				that.pageCache[key]['temps'] = '';
+			}
+			
+			var newTemps = that.arrayDiff(that.pageCache[key]['temps'].split(','), that.currentUrlCache);
+			if(newTemps.length > 0) {
+				that.pageCache[key]['temps'] = newTemps.join(',');
+			}else {
+				console.log('页面："' + key + '"首次加载页面' );	
+			}
+		}
+	};
+	
+	/**
 	 * bt.setHeaders()
 	 * 设置发送的头部信息
 	 * @param {String} url 必须，新页面地址
@@ -267,14 +290,14 @@
 	 */
 	bt.setHeaders = function(url, temps) {
 		var that = this;
-		console.log(url);
+		
 		if(!that.pageCache[url]) {
 			that.pageCache[url] = {};
 		}
 		if(!that.pageCache[url]['temps']) {
 			that.pageCache[url]['temps'] = temps;
 		}
-		console.log(that.pageCache[url]['temps']);
+		
 		that.headers['Temps'] = that.pageCache[url]['temps'] ? that.pageCache[url]['temps'] : '';
 		
 		var noExist = that.arrayDiff(that.headers.Temps.split(','), that.tempUrlCache);
@@ -329,6 +352,7 @@
 	History.Adapter.bind(window, 'statechange', function() {
 		var actualState = History.getState(false),
 			url = actualState.url;
+		url = url.replace(/http:\/\/localhost\/git\/bittys\//g, '');	//本地测试用，正式环境下需删除
 		if(!bt.isLinkClick) {
 			bt.setHeaders(url);
 			$.ajax({
