@@ -186,6 +186,15 @@
 			}
 			
 			that.currentUrlCache = new_temps;
+			
+			url = url.replace(/http:\/\/localhost\/git\/bittys\//g, '');	//本地测试用，正式环境下需删除
+			if(!that.pageCache[url]) {
+				that.pageCache[url] = {};
+			}
+			if(!that.pageCache[url]['temps']) {
+				that.pageCache[url]['temps'] = that.currentUrlCache.join(',');
+			}
+			
 			that.refreshPageCache();
 			
 			for(var key in tempId) {

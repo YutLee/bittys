@@ -46,8 +46,7 @@ class commonController extends baseController
 		$headers = getallheaders();
 		$request = array(
 			'temps' => explode(',', $headers['Temps']),
-			'no_exist' => explode(',', $headers['NoExist']),
-			'current' => explode(',', $headers['Current'])
+			'no_exist' => explode(',', $headers['NoExist'])
 		);
 		return $request;
 	}
