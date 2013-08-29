@@ -374,7 +374,8 @@
 		formId = getOptions(formId);
 		submitId = getOptions(submitId);
 		url = getOptions(url);
-		method = (method === 'POST' || method === 'GET') ? method : null;
+		method = that.isString(method) ? method.toLocaleUpperCase() : method;
+		method = (method == 'POST' || method == 'GET') ? method : null;
 		if(!formId) {
 			if(!submitId) {
 				console.log('参数 formId 或 submitId 必须有一个');
@@ -393,7 +394,7 @@
 		
 		if(!method) {
 			var m = $form.attr('method');
-			method = !m ? 'POST' : m; 
+			method = !m ? 'POST' : m.toLocaleUpperCase(); 
 		}
 		
 		if(!url) {
@@ -404,13 +405,13 @@
 		var params = $form.serialize();//form序列化
 		console.log(params);
 		var data;
-		if(method === 'POST') {
+		if(method == 'POST') {
 			data = params;
 		}else {
 			data = '';
 			url = url + params;
 		}
-		
+		that.isLinkClick = true;
 		that.setHeaders(url);
 		$.ajax({
 			url: url,
@@ -418,7 +419,12 @@
 			dataType: 'json',
 			data: data,
 			headers: that.headers,
+			beforeSend: function() {
+				History.pushState('', url, url);
+				History.replaceState('', url, url);
+			},
 			success: function(data) {
+				that.isLinkClick = false;
 				that.loadPage(url, data);
 			}
 		});

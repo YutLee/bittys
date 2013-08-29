@@ -2,12 +2,12 @@
 <div class="mod_header bg_header bdc">
     <div class="search">
         <div class="inputBox">
-        	<form id="sec">
-            	<input id="index_search_box" type="text" value="" />
+        	<form id="sec" method="post">
+            	<input id="index_search_box" name="keyword" type="text" />
             </form>
         </div>
         <div class="clearInput">×</div>
-        <button onclick="console.log(app);app.bt.ajaxForm('sec', '', 'index.php?r=default/hadsearch/index&keyword=');" style="position:absolute;top:0;z-index:10;">提交</button>
+        <button onclick="console.log(app);app.bt.ajaxForm('sec', '', 'index.php?r=default/hadsearch/index&');" style="position:absolute;top:0;z-index:10;">提交</button>
         <a class="toSearch" href=""></a>
         <div class="js_back back" ></div>
     </div>
