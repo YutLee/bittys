@@ -347,7 +347,7 @@
 	 * 绑定a链接点击事件
 	 */
 	bt.bindLink = function() {
-		$('body').delegate('a', 'click', function() {
+		$('body').delegate('a[target!=_blank]', 'click', function() {
 			var t = $(this),
 				url = t.attr('href'),
 				temps = t.attr('data-temps');
