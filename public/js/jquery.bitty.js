@@ -357,6 +357,74 @@
 	};
 	
 	/**
+	 * bt.ajaxForm(formId)
+	 * 设置发送的头部信息
+	 * @param {String} formId 可缺省，表单id；缺省时 submitId 参数必填
+	 * @param {String} submitId 可缺省，提交的按钮；缺省时 formId 参数必填
+	 * @param {String} url 可缺省，提交的地址；缺省时默认提交到当前地址或表单的 action 属性地址
+	 * @param {String} method 可缺省，提交的方式；缺省时默认取表单 method 属性的值，method为空时默认'POST'提交
+	 */
+	bt.ajaxForm = function(formId, submitId, url, method) {
+		var that = this;
+			
+		function getOptions(param) {
+			var p = param && $.trim(param) != '' ? param : null;
+			return p;
+		}
+		formId = getOptions(formId);
+		submitId = getOptions(submitId);
+		url = getOptions(url);
+		method = (method === 'POST' || method === 'GET') ? method : null;
+		if(!formId) {
+			if(!submitId) {
+				console.log('参数 formId 或 submitId 必须有一个');
+				return false;
+			}else {
+				var button = $('#' + submitId);	
+				formId = button.closest('form')[0];
+				button.bind({
+					'click.submit': function() {
+						return false;	
+					}
+				});
+			}
+		}
+		var $form = that.isString(formId) ? $('#' + formId) : $(formId);
+		
+		if(!method) {
+			var m = $form.attr('method');
+			method = !m ? 'POST' : m; 
+		}
+		
+		if(!url) {
+			var action = $form.attr('action');
+			url = !action ? window.location.href : action; 
+		}
+		
+		var params = $form.serialize();//form序列化
+		console.log(params);
+		var data;
+		if(method === 'POST') {
+			data = params;
+		}else {
+			data = '';
+			url = url + params;
+		}
+		
+		that.setHeaders(url);
+		$.ajax({
+			url: url,
+			type: method,
+			dataType: 'json',
+			data: data,
+			headers: that.headers,
+			success: function(data) {
+				that.loadPage(url, data);
+			}
+		});
+	};
+	
+	/**
 	 * 绑定历史地址事件
 	 */
 	History.Adapter.bind(window, 'statechange', function() {

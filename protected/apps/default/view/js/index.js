@@ -10,7 +10,7 @@ $(document).delegate('.toSearch', 'click', function(){
 		input.blur();
 		var keyword = input.val();
 		if (keyword){
-			var surl = '#index.php?r=default/hadsearch/index&keyword=' + keyword;
+			var surl = 'index.php?r=default/hadsearch/index&keyword=' + keyword;
 			that.attr('href', surl);
 		}else{ 
 			//ohm.tt.warningTip('请输入关键字');
