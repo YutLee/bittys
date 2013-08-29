@@ -215,7 +215,8 @@
 				$(data.mod[key]).append($('<div id="' + id +'"/>').html(html));
 				console.log('载人新模块："' + id + '"');
 			}
-			
+			bt.loadCss(data.css_url);
+			bt.loadJs(data.js_url);
 		}
 	}
 	

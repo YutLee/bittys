@@ -1,9 +1,9 @@
 // 后退
-$('body').delegate('.js_back', 'click', function(){
+$(document).delegate('.js_back', 'click', function(){
 	history.back();
 });
 //搜索按钮
-$('body').delegate('.toSearch', 'click', function(){
+$(document).delegate('.toSearch', 'click', function(){
 	var that = $(this);
 	var input = that.siblings('.inputBox').children('input');
 	if(input.length !== 0) {
@@ -19,7 +19,7 @@ $('body').delegate('.toSearch', 'click', function(){
 	}
 });
 
-$('body').delegate('.clearInput', 'click', function() {
+$(document).delegate('.clearInput', 'click', function() {
 	var that = $(this);
 	var input = that.siblings('.inputBox').children('input');
 	input.val('');

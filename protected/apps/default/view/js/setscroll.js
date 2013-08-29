@@ -1,6 +1,10 @@
 var wrapper = $('.tab_wrapper')[0];
-var tabs = $('#tabs');
-var tabList = [];
+var tabs = $('#tabs'), page = $('.tab_content');
+var chose;
+if(iscroll) {
+	iscroll.destroy();
+	iscroll = null;
+}
 var iscroll = new iScroll(wrapper, {
 	snap: true,
 	momentum: false,
@@ -9,30 +13,28 @@ var iscroll = new iScroll(wrapper, {
 	vScroll: false,
 	scrollbarClass: 'myScrollbar',
 	onSnapStart: function() {
-		var bdWidth = $(window).width(),
-			page = $('.tab_content');
+		var bdWidth = $(window).width();
 		page.width(bdWidth);
 		$('.tab_contents').width(page.width() * page.length);
-		for(var i = 0; page[i] ; i++) {
-			var s = new iScroll(page[i], {checkDOMChanges: true, hScroll: false, scrollbarClass: 'myScrollbar'});
-			tabList.push(s);
-		}
 	},
 	onScrollEnd: function () {
-		tabs.find('.choose').removeClass('choose');
-		tabs.find('.tab').eq(this.currPageX).addClass('choose');
+		var now = tabs.find('.tab').eq(this.currPageX);
+		if(!now.hasClass('choose')) {
+			now.addClass('choose').siblings('.choose').removeClass('choose');
+		}
 	}
 });
-tabList = [];
+for(var i = 0; page[i] ; i++) {
+	new iScroll(page[i], {checkDOMChanges: true, hScroll: false, scrollbarClass: 'myScrollbar'});
+}
 
-//iscroll.refresh();
 iscroll.scrollToPage(1, 0, 100);
+
 tabs.find('.tab').unbind('click');
 tabs.find('.tab').bind({
 	'click':function() {
 		var that = $(this),
 			index = that.index();
-		//tabList[index].refresh();
 		iscroll.scrollToPage(index);
 	}
 });
