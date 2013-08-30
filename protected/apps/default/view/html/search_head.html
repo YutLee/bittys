@@ -7,7 +7,7 @@
             </form>
         </div>
         <div class="clearInput">×</div>
-        <button onclick="console.log(app);app.bt.ajaxForm('sec', '', 'index.php?r=default/hadsearch/index&');" style="position:absolute;top:0;z-index:10;">提交</button>
+        <button onclick="app.bt.ajaxForm({formId: 'sec', url: 'index.php?r=default/hadsearch/index', temps: 'html/search_result'});" style="position:absolute;top:0;z-index:10;">提交</button>
         <a class="toSearch" href=""></a>
         <div class="js_back back" ></div>
     </div>

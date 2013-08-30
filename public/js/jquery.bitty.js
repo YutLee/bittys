@@ -172,11 +172,10 @@
 			tempId = data.temp_id;
 		if(that.isObject(tempId)) {
 			var new_temps = data.temp_url;
-			var diff = that.arrayDiff(that.currentUrlCache, new_temps);
-			diff = diff.length > 0 ? diff : new_temps;
+			var diff = that.currentUrlCache.length > 0 ? that.arrayDiff(that.currentUrlCache, new_temps) : new_temps;
 			var k = 0, 
 				l = diff.length;
-			
+
 			for(; k < l; k++) {
 				var id = diff[k].replace(/\//g, '-');
 				if($('#' + id).length > 0) {
@@ -195,9 +194,9 @@
 				that.pageCache[url]['temps'] = that.currentUrlCache.join(',');
 			}
 			
-			that.refreshPageCache();
-			
-			for(var key in tempId) {
+			//that.refreshPageCache();
+
+			for(var key in tempId) {	//遍历需要更新的模板
 				var value = tempId[key],
 					id = value.replace(/\//g, '-'),
 					html;
@@ -279,15 +278,14 @@
 		var that = this;
 		
 		for(var key in that.pageCache) {
-			if(!that.pageCache[key]['temps'] && that.currentUrlCache) {
-				that.pageCache[key]['temps'] = '';
-			}
-			
-			var newTemps = that.arrayDiff(that.pageCache[key]['temps'].split(','), that.currentUrlCache);
-			if(newTemps.length > 0) {
-				that.pageCache[key]['temps'] = newTemps.join(',');
-			}else {
-				console.log('页面："' + key + '"首次加载页面' );	
+			if(that.pageCache[key]['temps'] && that.currentUrlCache) {
+				var newTemps = that.arrayDiff(that.pageCache[key]['temps'].split(','), that.currentUrlCache);
+				if(newTemps.length > 0) {
+					that.pageCache[key]['temps'] = newTemps.join(',');
+				}else {
+					that.pageCache[key]['temps'] = null;
+				}
+				console.log('更新页面缓存' + key);
 			}
 		}
 	};
@@ -300,7 +298,8 @@
 	 */
 	bt.setHeaders = function(url, temps) {
 		var that = this;
-		
+		console.log(url, that.pageCache[url]);
+		//that.refreshPageCache();
 		if(!that.pageCache[url]) {
 			that.pageCache[url] = {};
 		}
@@ -311,7 +310,19 @@
 		that.headers['Temps'] = that.pageCache[url]['temps'] ? that.pageCache[url]['temps'] : '';
 		
 		var noExist = that.arrayDiff(that.headers.Temps.split(','), that.tempUrlCache);
-		that.headers['NoExist'] = noExist.join(',');
+		that.headers['NoExist'] = that.pageCache[url]['temps'] ? noExist.join(',') : 'none';
+	};
+	
+	/**
+	 * bt.initPageCache()
+	 * 初始化页面缓存
+	 * @param {String} url 必须，新页面地址
+	 */
+	bt.initPageCache = function(url) {
+		var that = this;
+		if(!that.pageCache[url]) {
+			that.pageCache[url] = {};
+		}
 	};
 	
 	/**
@@ -337,7 +348,7 @@
 				that.loadPage(url, data);
 			},
 			error: function(xhr) {
-				console.log(xhr);	
+				console.error(xhr);	
 			}
 		});
 	};
@@ -363,26 +374,25 @@
 	 * @param {String} submitId 可缺省，提交的按钮；缺省时 formId 参数必填
 	 * @param {String} url 可缺省，提交的地址；缺省时默认提交到当前地址或表单的 action 属性地址
 	 * @param {String} method 可缺省，提交的方式；缺省时默认取表单 method 属性的值，method为空时默认'POST'提交
+	 * @param {String} temps 可缺省，请求新页面所需的模板id；多个模板id用","隔开；缺省时，服务器返回完整的页面模板；
 	 */
-	bt.ajaxForm = function(formId, submitId, url, method) {
-		var that = this;
-			
-		function getOptions(param) {
-			var p = param && $.trim(param) != '' ? param : null;
-			return p;
-		}
-		formId = getOptions(formId);
-		submitId = getOptions(submitId);
-		url = getOptions(url);
-		method = that.isString(method) ? method.toLocaleUpperCase() : method;
-		method = (method == 'POST' || method == 'GET') ? method : null;
-		if(!formId) {
-			if(!submitId) {
+	bt.ajaxForm = function(options) {
+		var that = this,
+			o = $.extend({
+				formId: null, 
+				submitId: null, 
+				url: null, 
+				method: null,
+				temps: ''
+			}, options || {});
+
+		if(!o.formId) {
+			if(!o.submitId) {
 				console.log('参数 formId 或 submitId 必须有一个');
 				return false;
 			}else {
-				var button = $('#' + submitId);	
-				formId = button.closest('form')[0];
+				var button = $('#' + o.submitId);	
+				o.formId = button.closest('form')[0];
 				button.bind({
 					'click.submit': function() {
 						return false;	
@@ -390,42 +400,44 @@
 				});
 			}
 		}
-		var $form = that.isString(formId) ? $('#' + formId) : $(formId);
+		var $form = that.isString(o.formId) ? $('#' + o.formId) : $(o.formId);
 		
-		if(!method) {
+		if(!o.method) {
 			var m = $form.attr('method');
-			method = !m ? 'POST' : m.toLocaleUpperCase(); 
+			o.method = !m ? 'GET' : m.toLocaleUpperCase(); 
 		}
 		
-		if(!url) {
+		if(!o.url) {
 			var action = $form.attr('action');
-			url = !action ? window.location.href : action; 
+			o.url = !action ? window.location.href : action; 
 		}
 		
-		var params = $form.serialize();//form序列化
-		console.log(params);
+		var params = $form.serialize();//form序列化, 自动调用了encodeURIComponent方法将数据编码了 
+		params = decodeURIComponent(params, true); //将数据解码
+		console.log(params, o.method);
 		var data;
-		if(method == 'POST') {
+		if(o.method == 'POST') {
 			data = params;
 		}else {
 			data = '';
-			url = url + params;
+			o.url = o.url.match(/&$/g) ? o.url + params :  o.url + '&' +  params;
 		}
+		console.log(o.url);
 		that.isLinkClick = true;
-		that.setHeaders(url);
+		that.setHeaders(o.url, o.temps);
 		$.ajax({
-			url: url,
-			type: method,
+			url: o.url,
+			type: o.method,
 			dataType: 'json',
 			data: data,
 			headers: that.headers,
 			beforeSend: function() {
-				History.pushState('', url, url);
-				History.replaceState('', url, url);
+				History.pushState('', o.url, o.url);
+				History.replaceState('', o.url, o.url);
 			},
 			success: function(data) {
 				that.isLinkClick = false;
-				that.loadPage(url, data);
+				that.loadPage(o.url, data);
 			}
 		});
 	};
@@ -435,10 +447,15 @@
 	 */
 	History.Adapter.bind(window, 'statechange', function() {
 		var actualState = History.getState(false),
-			url = actualState.url;
+			url = actualState.url,
+			temps;
 		url = url.replace(/http:\/\/localhost\/git\/bittys\//g, '');	//本地测试用，正式环境下需删除
+		//url = encodeURIComponent(url, true);
+		bt.initPageCache(url);
+		temps = bt.pageCache[url]['temps'];
+		temps = temps ? temps : null;
 		if(!bt.isLinkClick) {
-			bt.setHeaders(url);
+			bt.setHeaders(url, temps);
 			$.ajax({
 				url: url,
 				dataType: 'json',

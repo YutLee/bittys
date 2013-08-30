@@ -11,6 +11,7 @@ class hadsearchController extends commonController
     public function index(){
 		$this->layout='';
         $keyword = in( $_GET['keyword'] );
+		$keyword = $keyword == null ? in( $_POST['keyword'] ) : $keyword; 
 		$currentPage = isset($_GET['p']) ? intval(in($_GET['p'])) : 1;
         $pageSize = isset($_GET['pageSize']) ? intval(in($_GET['pageSize'])) : 3;
 		$pageSize = $pageSize < 1 ? 5 : $pageSize;
@@ -69,23 +70,14 @@ class hadsearchController extends commonController
 			}
 		}
 		$data = $data ? $data : array('', array('no_data' => true));
-		if($currentPage && $currentPage > 1) {
-			$temp_url = array(
-				'0' => 'html/search_result_page'
-			);
-			$mod = array(
-				'0' => $_POST['mod']
-			);
-		}else {
-			$temp_url = array(
-				'0' => 'html/search_head', 
-				'1' => 'html/search_result'
-			);
-			$mod = array(
-				'0' => '#mod_index',
-				'1' => '#mod_index'
-			);
-		}
+		$temp_url = array(
+			'0' => 'html/search_head', 
+			'1' => 'html/search_result'
+		);
+		$mod = array(
+			'0' => '#mod_index',
+			'1' => '#mod_index'
+		);
 		$js_url = array(
 			'0' => __APPVIEW__ .'/js/scroll.js'
 		);

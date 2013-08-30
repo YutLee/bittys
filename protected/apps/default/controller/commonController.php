@@ -58,11 +58,19 @@ class commonController extends baseController
 	 */
 	public function loadPage($data) {
 		$temp_url = $data['temp_url'];
-		$request = $this->getRequest();
-		$re_temps = $request['temps'];	//客户端请求的模板
-		$no_exist = $request['no_exist'];	//未缓存的模板
-		$new_temps = (is_array($re_temps) && count($re_temps) > 0 && $re_temps[0] != '') ? array_intersect($temp_url, $re_temps) : $temp_url;
-		$new_no_exist = ( is_array($no_exist) && count($no_exist) > 0 && $no_exist[0] != '') ? array_intersect($temp_url, $no_exist): $temp_url;
+		
+		if($this->isFirstLoading()) {
+			$new_temps = $temp_url;
+			$new_no_exist = $temp_url;
+		}else {
+			$request = $this->getRequest();
+			$re_temps = $request['temps'];	//客户端请求的模板
+			$no_exist = $request['no_exist'];	//未缓存的模板
+			
+			$new_temps = (count($re_temps) > 0 && $re_temps[0] != '') ? array_intersect($temp_url, $re_temps) : $temp_url;
+			$new_no_exist = (count($no_exist) > 0 && $no_exist[0] == 'none') ? $temp_url : array_intersect($temp_url, $no_exist);
+		}
+		
 		$p = 'p';
 		$temp = array();
 		$temp_id = array();
