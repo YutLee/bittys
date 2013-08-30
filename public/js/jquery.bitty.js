@@ -450,7 +450,9 @@
 			url = actualState.url,
 			temps;
 		url = url.replace(/http:\/\/localhost\/git\/bittys\//g, '');	//本地测试用，正式环境下需删除
-		//url = encodeURIComponent(url, true);
+		console.log('n', url);
+		url = url.replace(/[\u4e00-\u9fa5]/g, encodeURIComponent('$0', true));	//对中文进行编码
+		console.log('e', url);
 		bt.initPageCache(url);
 		temps = bt.pageCache[url]['temps'];
 		temps = temps ? temps : null;
