@@ -344,8 +344,10 @@
 			var t = $(this),
 				url = t.attr('href'),
 				temps = t.attr('data-temps');
-			bt.request(url, temps);
-			return false;	
+			if( !($.trim(url).match(/#.*/) || $.trim(url).match(/javascript:/)) ) {
+				bt.request(url, temps);
+				return false;
+			}	
 		});	
 	};
 	
@@ -396,7 +398,7 @@
 		
 		var params = $form.serialize();//form序列化, 自动调用了encodeURIComponent方法将数据编码了 
 		params = decodeURIComponent(params, true); //将数据解码
-		//console.log(params, o.method);
+
 		var data, isHistory;
 		if(o.method == 'POST') {
 			data = params;
@@ -434,10 +436,10 @@
 		var actualState = History.getState(false),
 			url = actualState.url,
 			temps;
+			
 		url = url.replace(/http:\/\/localhost\/git\/bittys\//g, '');	//本地测试用，正式环境下需删除
-		//console.log('n', url);
 		//url = url.replace(/[\u4e00-\u9fa5]/g, encodeURIComponent('$0', true));	//对中文进行编码
-		//console.log('e', url);
+		
 		bt.initPageCache(url);
 		temps = bt.pageCache[url]['temps'];
 		temps = temps ? temps : null;
