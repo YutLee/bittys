@@ -168,8 +168,8 @@
 		}
 		
 		if(that.isObject(tempId)) {
-			var new_temps = data.temp_url;
-			var diff = that.currentUrlCache.length > 0 ? that.arrayDiff(that.currentUrlCache, new_temps) : new_temps;
+			var allTemps = data.temp_url;
+			var diff = that.currentUrlCache.length > 0 ? that.arrayDiff(that.currentUrlCache, allTemps) : allTemps;
 			var k = 0, 
 				l = diff.length;
 
@@ -181,15 +181,18 @@
 				}
 			}
 			
-			that.currentUrlCache = new_temps;
-			
 			url = url.replace(/http:\/\/localhost\/git\/bittys\//g, '');	//本地测试用，正式环境下需删除
 			if(!that.pageCache[url]) {
 				that.pageCache[url] = {};
 			}
 			if(!that.pageCache[url]['temps']) {
-				that.pageCache[url]['temps'] = that.currentUrlCache.join(',');
+				that.pageCache[url]['temps'] = allTemps.join(',');
 			}
+			if(!that.pageCache[url]['allTemps']) {
+				that.pageCache[url]['allTemps'] = allTemps.join(',');
+			}
+			
+			that.currentUrlCache = allTemps;
 
 			for(var key in tempId) {	//遍历需要更新的模板
 				var value = tempId[key],
@@ -268,6 +271,30 @@
 	};
 	
 	/**
+	 * bt.refreshPageCache()
+	 * 更新所有页面缓存信息
+	 * @param {String} url 必须，新页面地址
+	 */
+	bt.refreshPageCache = function(url) {
+		var that = this,
+		    newTemps,
+			reTemps;
+		for(var key in that.pageCache) {
+			if(key === url && that.pageCache[key]['temps'] && that.currentUrlCache) {
+				newTemps = that.arrayDiff(that.pageCache[key]['allTemps'].split(','), that.currentUrlCache);
+				newTemps = that.arrayDiff(newTemps, that.pageCache[key]['temps'].split(','));
+				reTemps = that.pageCache[key]['temps'].split(',');
+				for(var i = 0; i < newTemps.length; i++) {
+					reTemps.push(newTemps[i]);
+				}
+				that.pageCache[key]['reTemps'] = reTemps.join(',');
+				console.log('更新页面缓存' + key);
+				break;
+			}
+		}
+	};
+	
+	/**
 	 * bt.setHeaders()
 	 * 设置发送的头部信息
 	 * @param {String} url 必须，新页面地址
@@ -282,18 +309,21 @@
 			that.pageCache[url] = {};
 		}
 		
-		if(!that.pageCache[url]['temps']) {
-			that.pageCache[url]['temps'] = temps;
-		}
+		that.refreshPageCache(url);
+
 		if(temps && temps != '') {
-			that.headers['Temps'] = temps;
+			that.headers['Temps'] = that.pageCache[url]['temps'] = that.pageCache[url]['reTemps'] = temps;
 			noExist = that.arrayDiff(temps.split(','), that.tempUrlCache);
+			that.headers['NoExist'] = noExist.join(',');
+		}else if(that.pageCache[url]['reTemps']) {
+			that.headers['Temps'] = that.pageCache[url]['reTemps'];
+			noExist = that.arrayDiff(that.pageCache[url]['reTemps'].split(','), that.tempUrlCache);
 			that.headers['NoExist'] = noExist.join(',');
 		}else {
 			that.headers['Temps'] = '';
 			that.headers['NoExist'] = 'none';
 		}
-		console.log('需要请求的新存模板', that.headers['NoExist']);
+		console.log('需要请求的数据', that.headers);
 	};
 	
 	/**
@@ -442,19 +472,13 @@
 	 */
 	History.Adapter.bind(window, 'statechange', function() {
 		var actualState = History.getState(false),
-			url = actualState.url,
-			temps;
+			url = actualState.url;
 			
 		url = url.replace(/http:\/\/localhost\/git\/bittys\//g, '');	//本地测试用，正式环境下需删除
 		//url = url.replace(/[\u4e00-\u9fa5]/g, encodeURIComponent('$0', true));	//对中文进行编码
 		
-		if(!bt.pageCache[url]) {
-			bt.pageCache[url] = {};
-		}
-		temps = bt.pageCache[url]['temps'];
-		temps = temps ? temps : null;
 		if(!bt.isLinkClick) {
-			bt.setHeaders(url, temps);
+			bt.setHeaders(url);
 			bt.ajax({url: url});
 		}
 	});
