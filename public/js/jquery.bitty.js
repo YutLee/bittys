@@ -152,9 +152,20 @@
 	 * @param {String} url 必须，新页面地址
 	 * @param {Json} data 必须，新页面数据和模板
 	 */
-	bt.loadPage = function(url, data, addHistory) {
+	bt.loadPage = function(url, data) {
 		var that = this,
-			tempId = data.temp_id;
+			tempId = data.temp_id,
+			error = data.error;
+			
+		if(that.isObject(error)) {
+			if(that.isString(error.url)) {
+				that.request(error.url);
+			}
+			if(that.isString(error.info) && error.info != '') {
+				app.tt.errorTip(error.info);
+			}
+			return false;
+		}
 		
 		if(that.isObject(tempId)) {
 			var new_temps = data.temp_url;
@@ -383,7 +394,7 @@
 		}
 		
 		var params = $form.serialize();//form序列化, 自动调用了encodeURIComponent方法将数据编码了 
-		//params = decodeURIComponent(params, true); //将数据解码
+		params = decodeURIComponent(params, true); //将数据解码
 		//console.log(params, o.method);
 		var data, isHistory;
 		if(o.method == 'POST') {
@@ -404,8 +415,8 @@
 			headers: that.headers,
 			beforeSend: function() {
 				if(isHistory) {
-					History.pushState('', '', url);
-					History.replaceState('', '', url);
+					History.pushState('', '', o.url);
+					History.replaceState('', '', o.url);
 				}
 			},
 			success: function(data) {

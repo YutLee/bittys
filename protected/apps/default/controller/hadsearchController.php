@@ -86,7 +86,8 @@ class hadsearchController extends commonController
 			'data'       => $data,
 			'js_url'     => $js_url,
 			'count_page' => 3,			
-			'mod'        => $mod
+			'mod'        => $mod,
+			'error'		 => array('url' => 'http://localhost/git/bittys/index.php')	
 		);
 		$this->loadPage($result);	
 	}

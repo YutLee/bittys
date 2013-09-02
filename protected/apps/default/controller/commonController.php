@@ -58,6 +58,15 @@ class commonController extends baseController
 	 */
 	public function loadPage($data) {
 		$temp_url = $data['temp_url'];
+		$error = $data['error'];
+		
+		if($error) {
+			$result = array(
+				'error' => $error
+			);
+			$this->printJson($result);
+			return false;
+		}
 		
 		if($this->isFirstLoading()) {
 			$new_temps = $temp_url;
@@ -105,41 +114,7 @@ class commonController extends baseController
 			}
 		}
 		
-		$result = $this->printJson($merge_data);
-		if($this->isFirstLoading()) {
-			$this->loadFrame($result);
-		}else {
-			echo $result;
-		}
-	}
-	
-	public function loadPage222($data) {
-		$temp_id = array();
-		$temp = array();
-		$temp_url = $data['temp_url'];
-		if(is_array($temp_url) && count($temp_url) > 0) {
-			$new_temp = $this->getTempId($temp_url);
-			foreach($new_temp as $key => $value) {
-				$temp_id['k'.$key] = $value;
-				$temp['k'.$key] = $this->display($value, true);
-				//array_push($data['temp_id'], array('0' => $key, '1' => $value));
-				//array_push($data['temp'], array('0' => $key, '1' => $this->display($value, true)));//获取模板内容
-			}
-			$data['temp_id'] = $temp_id;
-			$data['temp'] = $temp;
-		}
-		foreach($data as $key => $value) {
-			$now = $data[$key];
-			if(!$now || (is_array($data[$key]) && count($data[$key]) == 0)) {
-				unset($data[$key]);
-			}
-		}
-		$result = $this->printJson($data);
-		if($this->isFirstLoading()) {
-			$this->loadFrame($result);
-		}else {
-			echo $result;
-		}
+		$this->printJson($merge_data);
 	}
 	
 	/**
@@ -152,7 +127,12 @@ class commonController extends baseController
 		if($data['code'] == '') {
 			//$data['code'] = 1;
 		}
-		return json_encode($data);
+		$result = json_encode($data);
+		if($this->isFirstLoading()) {
+			$this->loadFrame($result);
+		}else {
+			echo $result;
+		}
 	}
 }
 ?>
