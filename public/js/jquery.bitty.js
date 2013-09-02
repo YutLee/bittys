@@ -311,9 +311,13 @@
 	 * 加载新页面，Ajax请求获取数据
 	 * @param {String} url 必须，新页面地址
 	 * @param {String} temps 可缺省，请求新页面所需的模板id；多个模板id用","隔开；缺省时，服务器返回完整的页面模板；
+	 * @param {Boolean} isHistory 可缺省， 新页面地址是否加入历史地址记录， 默认 true 加入
+	 * @param {String} title 可缺省，新页面标题，缺省下取当前页面标题
 	 */
-	bt.request = function(url, temps) {
-		var that = this;
+	bt.request = function(url, temps, isHistory, title) {
+		var that = this,
+			isHistory = (isHistory === undefined || isHistory === true) ? true : false;
+			title = title ? title : document.title;
 		that.isLinkClick = true;
 		//url = url.replace(/[\u4e00-\u9fa5]/g, encodeURIComponent('$0', true));	//对中文进行编码
 		that.setHeaders(url, temps);
@@ -322,8 +326,10 @@
 			dataType: 'json',
 			headers: that.headers,
 			beforeSend: function() {
-				History.pushState('', '', url);
-				History.replaceState('', '', url);
+				if(isHistory) {
+					History.pushState('', title, url);
+					History.replaceState('', title, url);
+				}
 			},
 			success: function(data) {
 				that.isLinkClick = false;
@@ -343,9 +349,10 @@
 		$('body').delegate('a[target!=_blank]', 'click', function() {
 			var t = $(this),
 				url = t.attr('href'),
-				temps = t.attr('data-temps');
+				temps = t.attr('data-temps'),
+				title = t.attr('data-title');
 			if( !($.trim(url).match(/#.*/) || $.trim(url).match(/javascript:/)) ) {
-				bt.request(url, temps);
+				bt.request(url, temps, true, title);
 				return false;
 			}	
 		});	
@@ -358,6 +365,8 @@
 	 * @param {String} submitId 可缺省，提交的按钮；缺省时 formId 参数必填
 	 * @param {String} url 可缺省，提交的地址；缺省时默认提交到当前地址或表单的 action 属性地址
 	 * @param {String} method 可缺省，提交的方式；缺省时默认取表单 method 属性的值，method为空时默认'POST'提交
+	 * @param {Boolean} isHistory 可缺省， 新页面地址是否加入历史地址记录， 默认 true 加入
+	 * @param {String} title 可缺省，新页面标题，缺省下取当前页面标题
 	 * @param {String} temps 可缺省，请求新页面所需的模板id；多个模板id用","隔开；缺省时，服务器返回完整的页面模板；
 	 */
 	bt.ajaxForm = function(options) {
@@ -367,6 +376,8 @@
 				submitId: null, 
 				url: null, 
 				method: null,
+				isHistory: true,
+				title: document.title,
 				temps: ''
 			}, options || {});
 
@@ -399,13 +410,12 @@
 		var params = $form.serialize();//form序列化, 自动调用了encodeURIComponent方法将数据编码了 
 		params = decodeURIComponent(params, true); //将数据解码
 
-		var data, isHistory;
+		var data;
 		if(o.method == 'POST') {
 			data = params;
-			isHistory = false;
+			o.isHistory = false;
 		}else {
 			data = '';
-			isHistory = true;
 			o.url = o.url.match(/&$/g) ? o.url + params :  o.url + '&' +  params;
 		}
 		that.isLinkClick = true;
@@ -417,9 +427,9 @@
 			data: data,
 			headers: that.headers,
 			beforeSend: function() {
-				if(isHistory) {
-					History.pushState('', '', o.url);
-					History.replaceState('', '', o.url);
+				if(o.isHistory) {
+					History.pushState('', o.title, o.url);
+					History.replaceState('', o.title, o.url);
 				}
 			},
 			success: function(data) {
