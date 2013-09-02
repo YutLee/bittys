@@ -159,7 +159,7 @@
 
 		if(that.isObject(error)) {
 			if(that.isString(error.url)) {
-				that.request(error.url);
+				that.request({url: error.url});
 			}
 			if(that.isString(error.info) && error.info != '') {
 				app.tt.errorTip(error.info);
@@ -212,7 +212,8 @@
 			that.loadCss(data.css_url);
 			that.loadJs(data.js_url);
 		}
-		console.log(that.pageCache);
+		//console.log('已缓存的模板', that.tempCache);
+		//console.log('ajax请求页面模板id', that.pageCache);
 	}
 	
 	/**
@@ -292,18 +293,43 @@
 			that.headers['Temps'] = '';
 			that.headers['NoExist'] = 'none';
 		}
+		console.log('需要请求的新存模板', that.headers['NoExist']);
 	};
 	
 	/**
-	 * bt.initPageCache()
-	 * 初始化页面缓存
+	 * bt.ajax()
+	 * 设置发送的头部信息
 	 * @param {String} url 必须，新页面地址
 	 */
-	bt.initPageCache = function(url) {
-		var that = this;
-		if(!that.pageCache[url]) {
-			that.pageCache[url] = {};
-		}
+	bt.ajax = function(options) {
+		var that = this,
+			o = $.extend({
+				url: '',
+				dataType: 'json',
+				headers: that.headers,
+				type: 'GET',
+				data: null
+			}, options || {});
+		$.ajax({
+			url: o.url,
+			type: o.type,
+			dataType: 'json',
+			headers: that.headers,
+			data: o.data,
+			beforeSend: function() {
+				if(o.isHistory) {
+					History.pushState('', o.title, o.url);
+					History.replaceState('', o.title, o.url);
+				}
+			},
+			success: function(data) {
+				that.isLinkClick = false;
+				that.loadPage(o.url, data);
+			},
+			error: function(xhr) {
+				console.error(xhr);	
+			}
+		});
 	};
 	
 	/**
@@ -314,31 +340,19 @@
 	 * @param {Boolean} isHistory 可缺省， 新页面地址是否加入历史地址记录， 默认 true 加入
 	 * @param {String} title 可缺省，新页面标题，缺省下取当前页面标题
 	 */
-	bt.request = function(url, temps, isHistory, title) {
+	bt.request = function(options) {
 		var that = this,
-			isHistory = (isHistory === undefined || isHistory === true) ? true : false;
-			title = title ? title : document.title;
+			o = $.extend({
+				url: '',
+				temps: '',
+				isHistory: true,
+				title: document.title
+			}, options || {});
+
 		that.isLinkClick = true;
 		//url = url.replace(/[\u4e00-\u9fa5]/g, encodeURIComponent('$0', true));	//对中文进行编码
-		that.setHeaders(url, temps);
-		$.ajax({
-			url: url,
-			dataType: 'json',
-			headers: that.headers,
-			beforeSend: function() {
-				if(isHistory) {
-					History.pushState('', title, url);
-					History.replaceState('', title, url);
-				}
-			},
-			success: function(data) {
-				that.isLinkClick = false;
-				that.loadPage(url, data);
-			},
-			error: function(xhr) {
-				console.error(xhr);	
-			}
-		});
+		that.setHeaders(o.url, o.temps);
+		that.ajax({url: o.url, isHistory: o.isHistory, title: o.title});
 	};
 	
 	/**
@@ -352,7 +366,7 @@
 				temps = t.attr('data-temps'),
 				title = t.attr('data-title');
 			if( !($.trim(url).match(/#.*/) || $.trim(url).match(/javascript:/)) ) {
-				bt.request(url, temps, true, title);
+				bt.request({url: url, temps: temps, title: title});
 				return false;
 			}	
 		});	
@@ -420,23 +434,7 @@
 		}
 		that.isLinkClick = true;
 		that.setHeaders(o.url, o.temps);
-		$.ajax({
-			url: o.url,
-			type: o.method,
-			dataType: 'json',
-			data: data,
-			headers: that.headers,
-			beforeSend: function() {
-				if(o.isHistory) {
-					History.pushState('', o.title, o.url);
-					History.replaceState('', o.title, o.url);
-				}
-			},
-			success: function(data) {
-				that.isLinkClick = false;
-				that.loadPage(o.url, data);
-			}
-		});
+		that.ajax({url: o.url, type: o.method, data: data, isHistory: o.isHistory, title: o.title});
 	};
 	
 	/**
@@ -450,19 +448,14 @@
 		url = url.replace(/http:\/\/localhost\/git\/bittys\//g, '');	//本地测试用，正式环境下需删除
 		//url = url.replace(/[\u4e00-\u9fa5]/g, encodeURIComponent('$0', true));	//对中文进行编码
 		
-		bt.initPageCache(url);
+		if(!bt.pageCache[url]) {
+			bt.pageCache[url] = {};
+		}
 		temps = bt.pageCache[url]['temps'];
 		temps = temps ? temps : null;
 		if(!bt.isLinkClick) {
 			bt.setHeaders(url, temps);
-			$.ajax({
-				url: url,
-				dataType: 'json',
-				headers: bt.headers,
-				success: function(data) {
-					bt.loadPage(url, data);
-				}
-			});
+			bt.ajax({url: url});
 		}
 	});
 	
