@@ -77,21 +77,6 @@
 		'Accept': 'application/json'
 	};
 	
-	//自定义doT编译设置
-	doT.templateSettings = {
-		evaluate:    /\{\@([\s\S]+?)\}\}/g,
-		interpolate: /\{\@=([\s\S]+?)\}\}/g,
-		encode:      /\{\@!([\s\S]+?)\}\}/g,
-		use:         /\{\@#([\s\S]+?)\}\}/g,
-		define:      /\{\@##\s*([\w\.$]+)\s*(\:|=)([\s\S]+?)#\}\}/g,
-		conditional: /\{\@\?(\?)?\s*([\s\S]*?)\s*\}\}/g,
-		iterate:     /\{\@~\s*(?:\}\}|([\s\S]+?)\s*\:\s*([\w$]+)\s*(?:\:\s*([\w$]+))?\s*\}\})/g,
-		varname: 'it',
-		strip: true,
-		append: true,
-		selfcontained: false
-	};
-	
 	bt.log = function(message, level) {
 		if (window.console) {
 			if (!level || level === 'info') {
@@ -167,9 +152,10 @@
 	 * @param {String} url 必须，新页面地址
 	 * @param {Json} data 必须，新页面数据和模板
 	 */
-	bt.loadPage = function(url, data) {
+	bt.loadPage = function(url, data, addHistory) {
 		var that = this,
 			tempId = data.temp_id;
+		
 		if(that.isObject(tempId)) {
 			var new_temps = data.temp_url;
 			var diff = that.currentUrlCache.length > 0 ? that.arrayDiff(that.currentUrlCache, new_temps) : new_temps;
@@ -193,8 +179,6 @@
 			if(!that.pageCache[url]['temps']) {
 				that.pageCache[url]['temps'] = that.currentUrlCache.join(',');
 			}
-			
-			//that.refreshPageCache();
 
 			for(var key in tempId) {	//遍历需要更新的模板
 				var value = tempId[key],
@@ -271,46 +255,31 @@
 	};
 	
 	/**
-	 * bt.refreshPageCache()
-	 * 更新所有页面缓存信息
-	 */
-	bt.refreshPageCache = function() {
-		var that = this;
-		
-		for(var key in that.pageCache) {
-			if(that.pageCache[key]['temps'] && that.currentUrlCache) {
-				var newTemps = that.arrayDiff(that.pageCache[key]['temps'].split(','), that.currentUrlCache);
-				if(newTemps.length > 0) {
-					that.pageCache[key]['temps'] = newTemps.join(',');
-				}else {
-					that.pageCache[key]['temps'] = null;
-				}
-				console.log('更新页面缓存' + key);
-			}
-		}
-	};
-	
-	/**
 	 * bt.setHeaders()
 	 * 设置发送的头部信息
 	 * @param {String} url 必须，新页面地址
 	 * @param {String} temps 可缺省，请求新页面所需的模板id；多个模板id用","隔开；缺省时，服务器返回完整的页面模板；
 	 */
 	bt.setHeaders = function(url, temps) {
-		var that = this;
+		var that = this,
+			newTemps,
+			noExist;
 		console.log(url, that.pageCache[url]);
-		//that.refreshPageCache();
+		
 		if(!that.pageCache[url]) {
 			that.pageCache[url] = {};
 		}
-		if(!that.pageCache[url]['temps']) {
+		
+		if(!that.pageCache[url]['temps'] && temps) {
 			that.pageCache[url]['temps'] = temps;
-		}
-		
-		that.headers['Temps'] = that.pageCache[url]['temps'] ? that.pageCache[url]['temps'] : '';
-		
-		var noExist = that.arrayDiff(that.headers.Temps.split(','), that.tempUrlCache);
-		that.headers['NoExist'] = that.pageCache[url]['temps'] ? noExist.join(',') : 'none';
+			newTemps = that.arrayDiff(that.pageCache[url]['temps'].split(','), that.currentUrlCache);
+			that.headers['Temps'] = newTemps.join(',');
+			noExist = that.arrayDiff(newTemps, that.tempUrlCache);
+			that.headers['NoExist'] = noExist.join(',');
+		}else {
+			that.headers['Temps'] = '';
+			that.headers['NoExist'] = 'none';
+		}	
 	};
 	
 	/**
@@ -334,14 +303,15 @@
 	bt.request = function(url, temps) {
 		var that = this;
 		that.isLinkClick = true;
+		//url = url.replace(/[\u4e00-\u9fa5]/g, encodeURIComponent('$0', true));	//对中文进行编码
 		that.setHeaders(url, temps);
 		$.ajax({
 			url: url,
 			dataType: 'json',
 			headers: that.headers,
 			beforeSend: function() {
-				History.pushState('', url, url);
-				History.replaceState('', url, url);
+				History.pushState('', '', url);
+				History.replaceState('', '', url);
 			},
 			success: function(data) {
 				that.isLinkClick = false;
@@ -413,16 +383,17 @@
 		}
 		
 		var params = $form.serialize();//form序列化, 自动调用了encodeURIComponent方法将数据编码了 
-		params = decodeURIComponent(params, true); //将数据解码
-		console.log(params, o.method);
-		var data;
+		//params = decodeURIComponent(params, true); //将数据解码
+		//console.log(params, o.method);
+		var data, isHistory;
 		if(o.method == 'POST') {
 			data = params;
+			isHistory = false;
 		}else {
 			data = '';
+			isHistory = true;
 			o.url = o.url.match(/&$/g) ? o.url + params :  o.url + '&' +  params;
 		}
-		console.log(o.url);
 		that.isLinkClick = true;
 		that.setHeaders(o.url, o.temps);
 		$.ajax({
@@ -432,8 +403,10 @@
 			data: data,
 			headers: that.headers,
 			beforeSend: function() {
-				History.pushState('', o.url, o.url);
-				History.replaceState('', o.url, o.url);
+				if(isHistory) {
+					History.pushState('', '', url);
+					History.replaceState('', '', url);
+				}
 			},
 			success: function(data) {
 				that.isLinkClick = false;
@@ -450,9 +423,9 @@
 			url = actualState.url,
 			temps;
 		url = url.replace(/http:\/\/localhost\/git\/bittys\//g, '');	//本地测试用，正式环境下需删除
-		console.log('n', url);
-		url = url.replace(/[\u4e00-\u9fa5]/g, encodeURIComponent('$0', true));	//对中文进行编码
-		console.log('e', url);
+		//console.log('n', url);
+		//url = url.replace(/[\u4e00-\u9fa5]/g, encodeURIComponent('$0', true));	//对中文进行编码
+		//console.log('e', url);
 		bt.initPageCache(url);
 		temps = bt.pageCache[url]['temps'];
 		temps = temps ? temps : null;

@@ -34,32 +34,32 @@
                     <div class="tab_content">
                         <div>
                             <!-- 店铺图片 -->
-                            <div class="box_storePic"><img src="http://shop.100msh.com/{@=it.store.store_logo}}" alt=""></div>
+                            <div class="box_storePic"><img src="http://shop.100msh.com/{{=it.store.store_logo}}" alt=""></div>
                             
                             <!-- 店铺信息 -->
                             <div class="mod_storeInfo">
-                                <div class="title">{@=it.store.store_name}}</div>
+                                <div class="title">{{=it.store.store_name}}</div>
                                 <div class="level">
                                     <div class="star"></div>
                                 </div>
                                 <div class="address">
-                                    地址：{@=it.store.address}}
+                                    地址：{{=it.store.address}}
                                 </div>
                                 <div class="phone">
-                                    电话：{@=it.store.tel}}
+                                    电话：{{=it.store.tel}}
                                 </div>
                                 <div class="contentMen">
-                                    联&ensp;系&ensp;人：{@=it.store.owner_name}}
+                                    联&ensp;系&ensp;人：{{=it.store.owner_name}}
                                 </div>
                                 <div class="time">
-                                    服务时间：{@=it.store.start_time}}-{@=it.store.close_time}}
+                                    服务时间：{{=it.store.start_time}}-{{=it.store.close_time}}
                                 </div>
                             </div>
                             
                             <!-- 店铺功能 -->
                             <div class="box_storeAction">
                                 <div class="ku_fix mod_storeAction">
-                                    <a class=" phone" data-tel="{@=it.store.tel}}" data-srcname="cater" href="tel:{@=it.store.tel}}">
+                                    <a class=" phone" data-tel="{{=it.store.tel}}" data-srcname="cater" href="tel:{{=it.store.tel}}">
                                         <div class="icon"></div>
                                         <div class="info">致电商家</div>
                                     </a>
@@ -71,17 +71,17 @@
                     <div class="tab_content">
                         <div>
                             <div id="container" class="ku_fix mod_store_goodsList">
-                                {@~it.goods: value}}
+                                {{~it.goods: value}}
                                     <div class="listBox">
-                                        <a class="list" href="index.php?r=default/goods/index&id={@=value.goods_id}}">
+                                        <a class="list" href="index.php?r=default/goods/index&id={{=value.goods_id}}">
                                             <div class="picBox">
-                                                <img src="http://shop.100msh.com/{@=value.default_image}}" alt="" />
+                                                <img src="http://shop.100msh.com/{{=value.default_image}}" alt="" />
                                             </div>
-                                            <div class="name">{@=value.goods_name}}</div>
-                                            <div class="price"><span>¥</span>{@=value.price}}</div>
+                                            <div class="name">{{=value.goods_name}}</div>
+                                            <div class="price"><span>¥</span>{{=value.price}}</div>
                                         </a>
                                     </div> 
-                                {@~}}
+                                {{~}}
                             </div>
                             <div class="next_page">
                                 <a href="index.php?r=default/store/goods_2">加载中...</a>

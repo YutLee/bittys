@@ -37,17 +37,17 @@
                         <div> 
                             <!-- 商品图片 -->
                             <div class="box_goodsPic" >
-                                <img src="http://shop.100msh.com/{@=it.goods.default_image}}" alt="">
+                                <img src="http://shop.100msh.com/{{=it.goods.default_image}}" alt="">
                             </div>
                             
                             <!-- 商品信息 -->
                             <div class="mod_goodsInfo">
-                                <div class="title">{@=it.goods.goods_name}}</div>
+                                <div class="title">{{=it.goods.goods_name}}</div>
                                 <div class="level">
                                     <div class="star"></div>
                                 </div>
-                                <div class="price c_money"><span>¥</span>{@=it.goods.price}}</div>
-                                <div class="slogn">{@=it.goods.tags}}</div>
+                                <div class="price c_money"><span>¥</span>{{=it.goods.price}}</div>
+                                <div class="slogn">{{=it.goods.tags}}</div>
                             </div>
                             
                             <!-- 商品功能 -->
@@ -57,7 +57,7 @@
                                         <div class="icon"></div>
                                         <div class="info">电话订购</div>
                                     </a>
-                                    <a class=" tostore" href="index.php?r=default/store/index&id={@=it.goods.store_id}}">
+                                    <a class=" tostore" href="index.php?r=default/store/index&id={{=it.goods.store_id}}">
                                         <div class="icon"></div>
                                         <div class="info">商家首页</div>
                                     </a>
@@ -69,7 +69,7 @@
                     <div class="tab_content">
                         <div>
                             <div class="mod_goodsDetail">
-                                {@=it.goods.description}}
+                                {{=it.goods.description}}
                             </div>
                         </div>
                     </div>

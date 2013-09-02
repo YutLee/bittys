@@ -1,26 +1,26 @@
-{@~it.goods: value}}
+{{~it.goods: value}}
 <div class="list goods">
-    <a class="link" href="index.php?r=default/goods/index&id={@=value['goods_id']}}">
+    <a class="link" href="index.php?r=default/goods/index&id={{=value['goods_id']}}">
         <div class="pic">
-            <img src="http://shop.100msh.com/{@=value['default_image']}}" alt="" />
+            <img src="http://shop.100msh.com/{{=value['default_image']}}" alt="" />
         </div>
         <div class="service">
-            <div class="title">{@=value['goods_name']}}</div>
+            <div class="title">{{=value['goods_name']}}</div>
             <div class="level"></div>
-            <div class="price c_money"><span>¥</span>{@=value['price']}}</div>
+            <div class="price c_money"><span>¥</span>{{=value['price']}}</div>
         </div>
     </a>
 </div>
-{@~}}
+{{~}}
 <!-- 店铺模板 -->
-{@~it.store: value}}
+{{~it.store: value}}
 <div class="list store">
-    <a class=" link" href="index.php?r=default/store/index&id={@=value['store_id']}}">
-        <div class="title">{@=value['store_name']}}</div>
+    <a class=" link" href="index.php?r=default/store/index&id={{=value['store_id']}}">
+        <div class="title">{{=value['store_name']}}</div>
         <div class="level"></div>
-        <div class="phone">{@=value['tel']}}</div>
+        <div class="phone">{{=value['tel']}}</div>
     </a>
 </div>
-{@~}}
+{{~}}
 
             
