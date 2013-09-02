@@ -156,7 +156,7 @@
 		var that = this,
 			tempId = data.temp_id,
 			error = data.error;
-			
+
 		if(that.isObject(error)) {
 			if(that.isString(error.url)) {
 				that.request(error.url);
@@ -209,9 +209,10 @@
 				$(data.mod[key]).append($('<div id="' + id +'"/>').html(html));
 				console.log('载人新模块："' + id + '"');
 			}
-			bt.loadCss(data.css_url);
-			bt.loadJs(data.js_url);
+			that.loadCss(data.css_url);
+			that.loadJs(data.js_url);
 		}
+		console.log(that.pageCache);
 	}
 	
 	/**
@@ -275,22 +276,22 @@
 		var that = this,
 			newTemps,
 			noExist;
-		console.log(url, that.pageCache[url]);
 		
 		if(!that.pageCache[url]) {
 			that.pageCache[url] = {};
 		}
 		
-		if(!that.pageCache[url]['temps'] && temps) {
+		if(!that.pageCache[url]['temps']) {
 			that.pageCache[url]['temps'] = temps;
-			newTemps = that.arrayDiff(that.pageCache[url]['temps'].split(','), that.currentUrlCache);
-			that.headers['Temps'] = newTemps.join(',');
-			noExist = that.arrayDiff(newTemps, that.tempUrlCache);
+		}
+		if(temps && temps != '') {
+			that.headers['Temps'] = temps;
+			noExist = that.arrayDiff(temps.split(','), that.tempUrlCache);
 			that.headers['NoExist'] = noExist.join(',');
 		}else {
 			that.headers['Temps'] = '';
 			that.headers['NoExist'] = 'none';
-		}	
+		}
 	};
 	
 	/**

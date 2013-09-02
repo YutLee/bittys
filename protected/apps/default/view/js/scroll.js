@@ -1,9 +1,16 @@
+(function() {
+	
 var wrapper = $('#scroll');
 
 var myScroll,
 	pullDownEl, pullDownOffset,
 	pullUpEl, pullUpOffset,
 	generatedCount = 0;
+	
+if(myScroll) {
+	myScroll.destroy();
+	myScroll = null;
+}
 	
 loaded();
 
@@ -31,15 +38,15 @@ function pullUpAction () {
 			//ohm.ab.loadPage(url, true);
 		}, 1000);	
 	}else {
-		//ohm.tt.successTip('没有更多了');
+		app.tt.successTip('没有更多了');
 	}
 }
 
 function loaded() {
-	pullDownEl = $('#pullDown')[0];
-	pullDownOffset = pullDownEl.offsetHeight;
-	pullUpEl = $('#pullUp')[0];	
-	pullUpOffset = pullUpEl.offsetHeight;
+	pullDownEl = $('#pullDown');
+	pullDownOffset = pullDownEl.height();
+	pullUpEl = $('#pullUp');	
+	pullUpOffset = pullUpEl.height();
 	
 	myScroll = new iScroll(wrapper[0], {
 		useTransition: false,
@@ -48,45 +55,45 @@ function loaded() {
 		scrollbarClass: 'myScrollbar',
 		topOffset: pullDownOffset,
 		onRefresh: function () {
-			if (pullDownEl.className.match('loading')) {
-				pullDownEl.className = '';
-				pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
-			} else if (pullUpEl.className.match('loading')) {
-				pullUpEl.className = '';
-				pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
+			if (pullDownEl.hasClass('loading')) {
+				pullDownEl.removeClass('loading');
+				pullDownEl.find('.pullDownLabel').html('Pull down to refresh...');
+			} else if (pullUpEl.hasClass('loading')) {
+				pullUpEl.removeClass('loading');
+				pullUpEl.find('.pullUpLabel').html('Pull up to load more...');
 			}
 		},
 		onScrollMove: function () {
-			if (this.y > 5 && !pullDownEl.className.match('flip')) {
-				pullDownEl.className = 'flip';
-				pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Release to refresh...';
+			if (this.y > 5 && !pullDownEl.hasClass('flip')) {
+				pullDownEl.addClass('flip');
+				pullDownEl.find('.pullDownLabel').html('Release to refresh...');
 				this.minScrollY = 0;
-			} else if (this.y < 5 && pullDownEl.className.match('flip')) {
-				pullDownEl.className = '';
-				pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Pull down to refresh...';
+			} else if (this.y < 5 && pullDownEl.hasClass('flip')) {
+				pullDownEl.removeClass('flip loading');
+				pullDownEl.find('.pullDownLabel').html('Pull down to refresh...');
 				this.minScrollY = -pullDownOffset;
 				
-			} else if (this.y < (this.maxScrollY - 5) && !pullUpEl.className.match('flip')) {
-				pullUpEl.className = 'flip';
-				pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Release to refresh...';
+			} else if (this.y < (this.maxScrollY - 5) && !pullUpEl.hasClass('flip')) {
+				pullUpEl.addClass('flip');
+				pullUpEl.find('.pullUpLabel').html('Release to refresh...');
 				this.maxScrollY = this.maxScrollY;
-			} else if (this.y > (this.maxScrollY + 5) && pullUpEl.className.match('flip')) {
-				pullUpEl.className = '';
-				pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Pull up to load more...';
+			} else if (this.y > (this.maxScrollY + 5) && pullUpEl.hasClass('flip')) {
+				pullUpEl.removeClass('flip loading');
+				pullUpEl.find('.pullUpLabel').html('Pull up to load more...');
 				this.maxScrollY = pullUpOffset;
 			}
 		},
 		onScrollEnd: function () {
-			if (pullDownEl.className.match('flip')) {
-				pullDownEl.className = 'loading';
-				pullDownEl.querySelector('.pullDownLabel').innerHTML = 'Loading...';				
+			if (pullDownEl.hasClass('flip')) {
+				pullDownEl.addClass('loading');
+				pullDownEl.find('.pullDownLabel').html('Loading...');				
 				pullDownAction();	
-			} else if (pullUpEl.className.match('flip')) {
-				pullUpEl.className = 'loading';
-				pullUpEl.querySelector('.pullUpLabel').innerHTML = 'Loading...';				
+			} else if (pullUpEl.hasClass('flip')) {
+				pullUpEl.addClass('loading');
+				pullUpEl.find('.pullUpLabel').html('Loading...');				
 				pullUpAction();	
 			}
 		}
 	});
-	
 }
+})();
