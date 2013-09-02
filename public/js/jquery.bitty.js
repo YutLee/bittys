@@ -327,6 +327,23 @@
 	};
 	
 	/**
+	 * bt.loading
+	 * 加载中... ...
+	 */
+	bt.loading = {
+		beforeSend: function(mods) {
+			for(var i = 0; i < mods.length; i++) {
+				$('#' + mods[i]).parent().addClass('loading');
+			}
+		},
+		success: function(mods) {
+			for(var i = 0; i < mods.length; i++) {
+				$('#' + mods[i]).parent().removeClass('loading');
+			}
+		}
+	};
+	
+	/**
 	 * bt.ajax()
 	 * 设置发送的头部信息
 	 * @param {String} url 必须，新页面地址
@@ -339,7 +356,8 @@
 				headers: that.headers,
 				type: 'GET',
 				data: null
-			}, options || {});
+			}, options || {}),
+			newMods = [];
 		$.ajax({
 			url: o.url,
 			type: o.type,
@@ -347,6 +365,14 @@
 			headers: that.headers,
 			data: o.data,
 			beforeSend: function() {
+				if(that.isFunction(that.loading.beforeSend)) {
+					var mods = that.headers.Temps ? that.arrayDiff(that.currentUrlCache, that.headers.Temps.split(',')) : that.currentUrlCache;
+					var i = 0, len = mods.length;	
+					for(; i < len; i++) {
+						newMods.push(mods[i].replace(/\//g, '-'));
+					}
+					that.loading.beforeSend.call(that, newMods);
+				}
 				if(o.isHistory) {
 					History.pushState('', o.title, o.url);
 					History.replaceState('', o.title, o.url);
@@ -354,6 +380,9 @@
 			},
 			success: function(data) {
 				that.isLinkClick = false;
+				if(that.isFunction(that.loading.success)) {
+					that.loading.success.call(that, newMods);
+				}
 				that.loadPage(o.url, data);
 			},
 			error: function(xhr) {
