@@ -7,12 +7,14 @@
 	//'use strict';
 	var app = window.app = window.app || {},
 		tt = app.tt = app.tooltip = {};
+	var play;
 	tt.tipStatus = false;
 	tt.tipElement = null;
 	tt.animTime = 300;
 	tt.delay = 5000;
-	tt.tip = function(type, msg) {
+	tt.tip = function(type, msg, delay) {
 		var that = this;
+		clearTimeout(play);
 		if(!that.tipStatus) {
 			if(that.tipElement) {
 				that.tipElement.remove();	
@@ -30,25 +32,32 @@
 			$('body').append(el.css({'visibility': 'hidden', 'display': 'block'}));
 			left = ($(window).width() - el.outerWidth()) * .5;
 			el.css({'left': left, 'visibility': 'visible', 'display': 'none'}).fadeIn(that.animTime);
-			setTimeout(function() {
-				el.fadeOut(that.animTime, function() {
-					el.remove();
-					that.tipStatus = false;
-				});
-			}, that.delay);	
+			if(delay !== 'none') {
+				play = setTimeout(function() {
+					that.closeTip();
+				}, delay || that.delay);	
+			}
 		}
 	};
 	
-	tt.errorTip = function(msg) {
-		this.tip('error', msg);
+	tt.closeTip = function() {
+		var that = this;
+		that.tipElement.fadeOut(that.animTime, function() {
+			that.tipElement.remove();
+			that.tipStatus = false;
+		});
+	}
+	
+	tt.errorTip = function(msg, delay) {
+		this.tip('error', msg, delay);
 	};
 	
-	tt.successTip = function(msg) {
-		this.tip('success', msg);
+	tt.successTip = function(msg, delay) {
+		this.tip('success', msg, delay);
 	};
 	
-	tt.warningTip = function(msg) {
-		this.tip('warning', msg);
+	tt.warningTip = function(msg, delay) {
+		this.tip('warning', msg, delay);
 	};
 })(jQuery, this);
 
@@ -108,7 +117,7 @@
 	};
 	
 	bt.isUndefined = function(variable) {
-		return variable === 'undefined';
+		return variable === undefined;
 	};
 	
 	/**
@@ -331,12 +340,15 @@
 	 * 加载中... ...
 	 */
 	bt.loading = {
+		msg: 'loading...',
 		beforeSend: function(mods) {
+			app.tt.warningTip(this.msg, 'none');
 			for(var i = 0; i < mods.length; i++) {
 				$('#' + mods[i]).parent().addClass('loading');
 			}
 		},
 		success: function(mods) {
+			app.tt.closeTip();
 			for(var i = 0; i < mods.length; i++) {
 				$('#' + mods[i]).parent().removeClass('loading');
 			}
@@ -371,7 +383,7 @@
 					for(; i < len; i++) {
 						newMods.push(mods[i].replace(/\//g, '-'));
 					}
-					that.loading.beforeSend.call(that, newMods);
+					that.loading.beforeSend.call(that.loading, newMods);
 				}
 				if(o.isHistory) {
 					History.pushState('', o.title, o.url);
@@ -381,7 +393,7 @@
 			success: function(data) {
 				that.isLinkClick = false;
 				if(that.isFunction(that.loading.success)) {
-					that.loading.success.call(that, newMods);
+					that.loading.success.call(that.loading, newMods);
 				}
 				that.loadPage(o.url, data);
 			},
